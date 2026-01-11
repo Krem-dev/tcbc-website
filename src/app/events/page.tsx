@@ -35,6 +35,7 @@ function EventsContent() {
   
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0)); // January 2026
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedDay, setSelectedDay] = useState<{ day: number; events: CalendarEvent[] } | null>(null);
   const [filterDate, setFilterDate] = useState<string>("");
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -211,68 +212,184 @@ function EventsContent() {
 
           {/* Calendar Grid */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            {/* Day Headers */}
-            <div className="grid grid-cols-7 border-b-2 border-gray-200 bg-gray-50">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="p-2 sm:p-3 text-center font-satoshi font-semibold text-gray-700 text-xs sm:text-sm">
-                  {day}
-                </div>
-              ))}
-            </div>
-
-            {/* Calendar Days */}
-            <div className="grid grid-cols-7">
-              {/* Empty cells */}
-              {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`} className="bg-gray-50 h-20 sm:h-28 md:h-32 border-r border-b border-gray-200" />
-              ))}
-
-              {/* Days */}
-              {Array.from({ length: daysInMonth }).map((_, i) => {
-                const day = i + 1;
-                const dayEvents = getEventsForDay(day);
-                
-                return (
-                  <div 
-                    key={day} 
-                    className="h-20 sm:h-28 md:h-32 p-1.5 sm:p-2 md:p-3 border-r border-b border-gray-200 hover:bg-gray-50 transition-colors flex flex-col"
-                  >
-                    <div className="font-satoshi font-bold text-gray-800 mb-1 sm:mb-2 text-sm sm:text-base">
-                      {day}
-                    </div>
-                    <div className="flex-1 overflow-y-auto space-y-0.5 sm:space-y-1">
-                      {dayEvents.slice(0, 3).map((event) => (
-                        <button
-                          key={event._id}
-                          onClick={() => setSelectedEvent(event)}
-                          className={`${categoryColors[event.category]} text-white text-xs sm:text-sm px-1.5 sm:px-2 py-1 sm:py-1.5 rounded font-medium w-full text-left hover:opacity-90 transition leading-tight`}
-                          title={event.title}
-                        >
-                          <span className="line-clamp-2 sm:line-clamp-1">
-                            {event.title}
-                          </span>
-                        </button>
-                      ))}
-                      {dayEvents.length > 3 && (
-                        <div className="text-xs text-gray-500 text-center py-1">
-                          +{dayEvents.length - 3} more
-                        </div>
-                      )}
-                      {dayEvents.length === 0 && (
-                        <div className="text-xs text-gray-400 italic text-center hidden sm:block">
-                          No events
-                        </div>
-                      )}
-                    </div>
+            {/* Mobile: Horizontal scroll container */}
+            <div className="overflow-x-auto sm:overflow-x-visible">
+              {/* Day Headers */}
+              <div className="grid grid-cols-7 border-b-2 border-gray-200 bg-gray-50 min-w-[640px] sm:min-w-0">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                  <div key={day} className="p-2 sm:p-3 text-center font-satoshi font-semibold text-gray-700 text-xs sm:text-sm">
+                    {day}
                   </div>
-                );
-              })}
+                ))}
+              </div>
+
+              {/* Calendar Days */}
+              <div className="grid grid-cols-7 min-w-[640px] sm:min-w-0">
+                {/* Empty cells */}
+                {Array.from({ length: firstDay }).map((_, i) => (
+                  <div key={`empty-${i}`} className="bg-gray-50 h-24 sm:h-28 md:h-32 border-r border-b border-gray-200" />
+                ))}
+
+                {/* Days */}
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const day = i + 1;
+                  const dayEvents = getEventsForDay(day);
+                  
+                  return (
+                    <div 
+                      key={day} 
+                      className="h-24 sm:h-28 md:h-32 p-2 sm:p-2 md:p-3 border-r border-b border-gray-200 hover:bg-gray-50 transition-colors flex flex-col"
+                    >
+                      <div className="font-satoshi font-bold text-gray-800 mb-1 sm:mb-2 text-sm sm:text-base">
+                        {day}
+                      </div>
+                      
+                      {/* Mobile: Show dots for events, Desktop: Show event buttons */}
+                      <div className="flex-1">
+                        {/* Mobile View: Event dots */}
+                        <div className="sm:hidden">
+                          {dayEvents.length > 0 && (
+                            <button
+                              onClick={() => {
+                                if (dayEvents.length === 1) {
+                                  setSelectedEvent(dayEvents[0]);
+                                } else {
+                                  setSelectedDay({ day, events: dayEvents });
+                                }
+                              }}
+                              className="w-full"
+                            >
+                              <div className="flex flex-wrap gap-1 justify-center">
+                                {dayEvents.slice(0, 6).map((event, idx) => (
+                                  <div
+                                    key={event._id}
+                                    className={`w-2 h-2 rounded-full ${categoryColors[event.category]}`}
+                                    title={event.title}
+                                  />
+                                ))}
+                                {dayEvents.length > 6 && (
+                                  <div className="text-xs text-gray-500 ml-1">
+                                    +{dayEvents.length - 6}
+                                  </div>
+                                )}
+                              </div>
+                              {dayEvents.length === 1 ? (
+                                <div className="text-xs text-gray-700 mt-1 truncate px-1">
+                                  {dayEvents[0].title}
+                                </div>
+                              ) : (
+                                <div className="text-xs text-gray-600 mt-1">
+                                  {dayEvents.length} events
+                                </div>
+                              )}
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Desktop View: Event buttons */}
+                        <div className="hidden sm:block overflow-y-auto space-y-1">
+                          {dayEvents.slice(0, 3).map((event) => (
+                            <button
+                              key={event._id}
+                              onClick={() => setSelectedEvent(event)}
+                              className={`${categoryColors[event.category]} text-white text-xs sm:text-sm px-1.5 sm:px-2 py-1 sm:py-1.5 rounded font-medium w-full text-left hover:opacity-90 transition leading-tight truncate`}
+                              title={event.title}
+                            >
+                              {event.title}
+                            </button>
+                          ))}
+                          {dayEvents.length > 3 && (
+                            <button
+                              onClick={() => setSelectedDay({ day, events: dayEvents })}
+                              className="text-xs text-gray-500 text-center py-1 hover:text-gray-700 transition w-full"
+                            >
+                              +{dayEvents.length - 3} more
+                            </button>
+                          )}
+                          {dayEvents.length === 0 && (
+                            <div className="text-xs text-gray-400 italic text-center">
+                              No events
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
             </>
           )}
         </div>
       </section>
+
+      {/* Day Events Modal */}
+      {selectedDay && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedDay(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-md w-full shadow-xl p-6 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-satoshi text-2xl font-bold text-gray-800 flex-1 pr-4">
+                {monthName.split(' ')[0]} {selectedDay.day}, {monthName.split(' ')[1]}
+              </h2>
+              <button
+                onClick={() => setSelectedDay(null)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6 text-gray-500" />
+              </button>
+            </div>
+
+            <p className="text-gray-600 font-aeonik mb-6">
+              {selectedDay.events.length} event{selectedDay.events.length !== 1 ? 's' : ''} on this day
+            </p>
+
+            {/* Events List */}
+            <div className="space-y-3">
+              {selectedDay.events.map((event) => (
+                <button
+                  key={event._id}
+                  onClick={() => {
+                    setSelectedDay(null);
+                    setSelectedEvent(event);
+                  }}
+                  className="w-full p-4 border border-gray-200 rounded-lg hover:border-[#48007e] hover:bg-gray-50 transition text-left"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-3 h-3 rounded-full ${categoryColors[event.category]} flex-shrink-0 mt-1`} />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-satoshi font-semibold text-gray-800 mb-1">
+                        {event.title}
+                      </h3>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {new Date(event.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          {event.location}
+                        </span>
+                      </div>
+                      <span className={`inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full ${categoryColors[event.category]} text-white capitalize`}>
+                        {event.category}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Event Detail Modal */}
       {selectedEvent && (
