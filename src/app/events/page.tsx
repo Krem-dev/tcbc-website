@@ -180,6 +180,14 @@ function EventsContent() {
               </button>
             </div>
 
+            {/* General Interaction Hint */}
+            <div className="text-center">
+              <p className="text-sm text-gray-600 font-aeonik">
+                <span className="sm:hidden">💡 Tap any day with events to view details</span>
+                <span className="hidden sm:inline">💡 Click on events to view details</span>
+              </p>
+            </div>
+
             {/* Date Filter and Clear Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
               <label className="font-aeonik text-xs sm:text-sm text-gray-700 font-semibold">Filter by Date:</label>
@@ -257,29 +265,30 @@ function EventsContent() {
                                   setSelectedDay({ day, events: dayEvents });
                                 }
                               }}
-                              className="w-full"
+                              className="w-full group hover:bg-gray-100 rounded p-1 transition-colors"
+                              title={dayEvents.length === 1 ? `View: ${dayEvents[0].title}` : `View ${dayEvents.length} events`}
                             >
                               <div className="flex flex-wrap gap-1 justify-center">
                                 {dayEvents.slice(0, 6).map((event, idx) => (
                                   <div
                                     key={event._id}
-                                    className={`w-2 h-2 rounded-full ${categoryColors[event.category]}`}
+                                    className={`w-2 h-2 rounded-full ${categoryColors[event.category]} group-hover:scale-110 transition-transform`}
                                     title={event.title}
                                   />
                                 ))}
                                 {dayEvents.length > 6 && (
-                                  <div className="text-xs text-gray-500 ml-1">
+                                  <div className="text-xs text-gray-500 ml-1 group-hover:text-gray-700 transition-colors">
                                     +{dayEvents.length - 6}
                                   </div>
                                 )}
                               </div>
                               {dayEvents.length === 1 ? (
-                                <div className="text-xs text-gray-700 mt-1 truncate px-1">
+                                <div className="text-xs text-gray-700 mt-1 truncate px-1 group-hover:text-[#48007e] transition-colors">
                                   {dayEvents[0].title}
                                 </div>
                               ) : (
-                                <div className="text-xs text-gray-600 mt-1">
-                                  {dayEvents.length} events
+                                <div className="text-xs text-gray-600 mt-1 group-hover:text-[#48007e] transition-colors">
+                                  {dayEvents.length} events • tap to view
                                 </div>
                               )}
                             </button>

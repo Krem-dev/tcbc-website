@@ -104,6 +104,42 @@ export const dummyEvents = [
     description: "Serve our community together.",
     ministry: "ministry-6",
   },
+  {
+    _id: "event-5",
+    title: "Prayer Meeting",
+    startDate: "2026-01-12T18:00:00Z",
+    location: "Prayer Room",
+    category: "prayer",
+    description: "Join us for evening prayer and reflection.",
+    ministry: "ministry-3",
+  },
+  {
+    _id: "event-6",
+    title: "Children's Ministry",
+    startDate: "2026-01-12T10:30:00Z",
+    location: "Children's Wing",
+    category: "youth",
+    description: "Fun activities and Bible stories for kids.",
+    ministry: "ministry-4",
+  },
+  {
+    _id: "event-7",
+    title: "Men's Fellowship",
+    startDate: "2026-01-16T19:30:00Z",
+    location: "Conference Room",
+    category: "community",
+    description: "Brotherhood, discussion, and mutual support.",
+    ministry: "ministry-5",
+  },
+  {
+    _id: "event-8",
+    title: "Women's Bible Study",
+    startDate: "2026-01-14T10:00:00Z",
+    location: "Library",
+    category: "study",
+    description: "Women's group studying the book of Proverbs.",
+    ministry: "ministry-2",
+  },
 ];
 
 export const dummyMinistries = [
