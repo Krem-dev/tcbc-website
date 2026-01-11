@@ -155,6 +155,15 @@ function EventsContent() {
       {/* Calendar Section */}
       <section className="py-12 sm:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#48007e] mx-auto mb-4"></div>
+                <p className="text-gray-600 font-aeonik">Loading events...</p>
+              </div>
+            </div>
+          ) : (
+            <>
           {/* Controls */}
           <div className="flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* Month Navigation */}
@@ -201,21 +210,21 @@ function EventsContent() {
           </div>
 
           {/* Calendar Grid */}
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg overflow-x-auto w-full">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Day Headers */}
-            <div className="grid grid-cols-7 border-b-2 border-gray-200 bg-gray-50 w-full min-w-max sm:min-w-full">
+            <div className="grid grid-cols-7 border-b-2 border-gray-200 bg-gray-50">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="p-2 sm:p-4 text-center font-satoshi font-semibold text-gray-700 text-xs sm:text-sm w-16 sm:flex-1">
+                <div key={day} className="p-2 sm:p-3 text-center font-satoshi font-semibold text-gray-700 text-xs sm:text-sm">
                   {day}
                 </div>
               ))}
             </div>
 
             {/* Calendar Days */}
-            <div className="grid grid-cols-7 w-full min-w-max sm:min-w-full auto-rows-max">
+            <div className="grid grid-cols-7">
               {/* Empty cells */}
               {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`} className="bg-gray-50 h-20 sm:h-24 border-r border-b border-gray-200 w-16 sm:flex-1" />
+                <div key={`empty-${i}`} className="bg-gray-50 h-20 sm:h-28 md:h-32 border-r border-b border-gray-200" />
               ))}
 
               {/* Days */}
@@ -226,24 +235,33 @@ function EventsContent() {
                 return (
                   <div 
                     key={day} 
-                    className="h-20 sm:h-24 p-2 sm:p-4 border-r border-b border-gray-200 hover:bg-gray-50 transition-colors flex flex-col w-16 sm:flex-1"
+                    className="h-20 sm:h-28 md:h-32 p-1.5 sm:p-2 md:p-3 border-r border-b border-gray-200 hover:bg-gray-50 transition-colors flex flex-col"
                   >
-                    <div className="font-satoshi font-semibold text-gray-800 mb-1 sm:mb-2 text-sm sm:text-base">
+                    <div className="font-satoshi font-bold text-gray-800 mb-1 sm:mb-2 text-sm sm:text-base">
                       {day}
                     </div>
-                    <div className="flex-1 overflow-y-auto space-y-0.5 sm:space-y-1 pr-1">
-                      {dayEvents.map((event) => (
+                    <div className="flex-1 overflow-y-auto space-y-0.5 sm:space-y-1">
+                      {dayEvents.slice(0, 3).map((event) => (
                         <button
                           key={event._id}
                           onClick={() => setSelectedEvent(event)}
-                          className={`${categoryColors[event.category]} text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-semibold truncate w-full text-left hover:opacity-90 transition block`}
+                          className={`${categoryColors[event.category]} text-white text-xs sm:text-sm px-1.5 sm:px-2 py-1 sm:py-1.5 rounded font-medium w-full text-left hover:opacity-90 transition leading-tight`}
                           title={event.title}
                         >
-                          {event.title}
+                          <span className="line-clamp-2 sm:line-clamp-1">
+                            {event.title}
+                          </span>
                         </button>
                       ))}
+                      {dayEvents.length > 3 && (
+                        <div className="text-xs text-gray-500 text-center py-1">
+                          +{dayEvents.length - 3} more
+                        </div>
+                      )}
                       {dayEvents.length === 0 && (
-                        <p className="text-xs text-gray-400 italic hidden sm:block">No events</p>
+                        <div className="text-xs text-gray-400 italic text-center hidden sm:block">
+                          No events
+                        </div>
                       )}
                     </div>
                   </div>
@@ -251,6 +269,8 @@ function EventsContent() {
               })}
             </div>
           </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -261,41 +281,56 @@ function EventsContent() {
           onClick={() => setSelectedEvent(null)}
         >
           <div
-            className="bg-white rounded-2xl max-w-md w-full shadow-lg p-8"
+            className="bg-white rounded-2xl max-w-md w-full shadow-xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Title */}
-            <h2 className="font-satoshi text-3xl font-bold text-gray-800 mb-4">
-              {selectedEvent.title}
-            </h2>
+            {/* Header with Close Button */}
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="font-satoshi text-2xl sm:text-3xl font-bold text-gray-800 flex-1 pr-4">
+                {selectedEvent.title}
+              </h2>
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6 text-gray-500" />
+              </button>
+            </div>
 
             {/* Category Badge */}
-            <span className={`${categoryColors[selectedEvent.category]} text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-6`}>
+            <span className={`${categoryColors[selectedEvent.category]} text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-6 capitalize`}>
               {selectedEvent.category}
             </span>
 
             {/* Details */}
-            <div className="space-y-3 mb-8">
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-[#48007e]" />
+            <div className="space-y-4 mb-6">
+              <div className="flex items-start gap-3">
+                <Clock className="w-5 h-5 text-[#48007e] mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-aeonik text-sm text-gray-600">Time</p>
-                  <p className="font-satoshi font-semibold text-gray-800">{new Date(selectedEvent.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  <p className="font-aeonik text-sm text-gray-600 mb-1">Time</p>
+                  <p className="font-satoshi font-semibold text-gray-800">
+                    {new Date(selectedEvent.startDate).toLocaleDateString()} at{' '}
+                    {new Date(selectedEvent.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-[#48007e]" />
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-[#48007e] mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-aeonik text-sm text-gray-600">Location</p>
+                  <p className="font-aeonik text-sm text-gray-600 mb-1">Location</p>
                   <p className="font-satoshi font-semibold text-gray-800">{selectedEvent.location}</p>
                 </div>
               </div>
             </div>
 
             {/* Description */}
-            <p className="font-aeonik text-gray-700 mb-8 leading-relaxed">
-              {selectedEvent.description}
-            </p>
+            <div className="mb-6">
+              <p className="font-aeonik text-sm text-gray-600 mb-2">Description</p>
+              <p className="font-aeonik text-gray-700 leading-relaxed">
+                {selectedEvent.description}
+              </p>
+            </div>
 
             {/* Close Button */}
             <button
