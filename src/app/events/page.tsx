@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, MapPin, Clock, X } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -29,7 +29,7 @@ interface CalendarEvent {
   ministry?: string;
 }
 
-export default function EventsPage() {
+function EventsContent() {
   const searchParams = useSearchParams();
   const ministryFilter = searchParams.get("ministry");
   
@@ -310,5 +310,13 @@ export default function EventsPage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <EventsContent />
+    </Suspense>
   );
 }
