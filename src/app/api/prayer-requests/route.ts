@@ -4,13 +4,17 @@ import { createClient } from "next-sanity";
 // Note: This uses environment variables for credentials
 // NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_TOKEN
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const token = process.env.SANITY_API_TOKEN;
+
+const client = projectId && dataset && token ? createClient({
+  projectId,
+  dataset,
   apiVersion: "2024-01-01",
-  token: process.env.SANITY_API_TOKEN,
+  token,
   useCdn: false,
-});
+}) : null;
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +27,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
+      );
+    }
+
+    // If Sanity is not configured, just log the request
+    if (!client) {
+      console.log("Prayer request received (Sanity not configured):", {
+        name,
+        email,
+        phone,
+        category,
+        prayerRequest,
+        isConfidential,
+        submittedAt: new Date().toISOString(),
+      });
+      return NextResponse.json(
+        { success: true, message: "Prayer request received. Sanity CMS not configured yet." },
+        { status: 201 }
       );
     }
 
@@ -56,6 +77,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
+    if (!client) {
+      console.warn("Sanity client not configured. Returning empty prayer requests.");
+      return NextResponse.json([]);
+    }
+
     const prayerRequests = await client.fetch(
       `*[_type == "prayerRequest"] | order(submittedAt desc) {
         _id,
