@@ -42,10 +42,13 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        // Always use dummy data for now (will switch to Sanity when credentials are added)
-        setArticles(dummyBlogs);
+        const response = await fetch("/api/blogs");
+        if (!response.ok) throw new Error("Failed to fetch blogs");
+        const data = await response.json();
+        setArticles(data && data.length > 0 ? data : dummyBlogs);
       } catch (error) {
         console.error("Failed to load blogs:", error);
+        setArticles(dummyBlogs);
       } finally {
         setLoading(false);
       }

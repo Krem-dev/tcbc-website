@@ -158,8 +158,11 @@ export default function MinistryPage() {
   useEffect(() => {
     const fetchMinistries = async () => {
       try {
-        // Always use dummy data for now (will switch to Sanity when credentials are added)
-        const transformed = dummyMinistries.map((m) => ({
+        const response = await fetch("/api/ministries");
+        if (!response.ok) throw new Error("Failed to fetch ministries");
+        const data = await response.json();
+        
+        const transformed = (data && data.length > 0 ? data : dummyMinistries).map((m: any) => ({
           _id: m._id,
           title: m.title,
           description: m.description,
@@ -177,6 +180,22 @@ export default function MinistryPage() {
         }
       } catch (error) {
         console.error("Failed to load ministries:", error);
+        const transformed = dummyMinistries.map((m) => ({
+          _id: m._id,
+          title: m.title,
+          description: m.description,
+          icon: getIconComponent(m.icon),
+          highlights: m.highlights,
+          cta: {
+            label: m.ctaLabel,
+            href: m.ctaHref,
+          },
+          image: m.image,
+        }));
+        setMinistries(transformed);
+        if (transformed.length > 0) {
+          setExpandedSection(transformed[0]._id);
+        }
       } finally {
         setLoading(false);
       }

@@ -36,10 +36,13 @@ export default function SermonsPage() {
   useEffect(() => {
     const fetchSermons = async () => {
       try {
-        // Always use dummy data for now (will switch to Sanity when credentials are added)
-        setSermons(dummySermons);
+        const response = await fetch("/api/sermons");
+        if (!response.ok) throw new Error("Failed to fetch sermons");
+        const data = await response.json();
+        setSermons(data && data.length > 0 ? data : dummySermons);
       } catch (error) {
         console.error("Failed to load sermons:", error);
+        setSermons(dummySermons);
       } finally {
         setLoading(false);
       }
