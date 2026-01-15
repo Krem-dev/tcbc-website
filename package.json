@@ -72,6 +72,7 @@
     "sanity": "^4.22.0",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.3",
+    "styled-components": "^6.3.6",
     "swiper": "^11.2.10",
     "tailwind-merge": "^3.2.0",
     "vaul": "^1.1.2",
