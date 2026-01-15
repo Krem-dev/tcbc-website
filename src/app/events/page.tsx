@@ -47,7 +47,7 @@ function EventsContent() {
         if (!response.ok) throw new Error("Failed to fetch events");
         const data = await response.json();
         
-        let transformed = (data && data.length > 0 ? data : dummyEvents).map((event: any) => ({
+        let transformed = (data || []).map((event: any) => ({
           _id: event._id,
           title: event.title,
           date: new Date(event.startDate).getDate(),
@@ -66,20 +66,7 @@ function EventsContent() {
         setEvents(transformed);
       } catch (error) {
         console.error("Failed to load events:", error);
-        let transformed = dummyEvents.map((event) => ({
-          _id: event._id,
-          title: event.title,
-          date: new Date(event.startDate).getDate(),
-          startDate: event.startDate,
-          location: event.location,
-          category: event.category,
-          description: event.description,
-          ministry: event.ministry,
-        }));
-        if (ministryFilter) {
-          transformed = transformed.filter((event) => event.ministry === ministryFilter);
-        }
-        setEvents(transformed);
+        setEvents([]);
       } finally {
         setLoading(false);
       }

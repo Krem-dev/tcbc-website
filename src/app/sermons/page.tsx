@@ -39,10 +39,10 @@ export default function SermonsPage() {
         const response = await fetch("/api/sermons");
         if (!response.ok) throw new Error("Failed to fetch sermons");
         const data = await response.json();
-        setSermons(data && data.length > 0 ? data : dummySermons);
+        setSermons(data || []);
       } catch (error) {
         console.error("Failed to load sermons:", error);
-        setSermons(dummySermons);
+        setSermons([]);
       } finally {
         setLoading(false);
       }

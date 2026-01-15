@@ -45,10 +45,10 @@ export default function BlogPage() {
         const response = await fetch("/api/blogs");
         if (!response.ok) throw new Error("Failed to fetch blogs");
         const data = await response.json();
-        setArticles(data && data.length > 0 ? data : dummyBlogs);
+        setArticles(data || []);
       } catch (error) {
         console.error("Failed to load blogs:", error);
-        setArticles(dummyBlogs);
+        setArticles([]);
       } finally {
         setLoading(false);
       }

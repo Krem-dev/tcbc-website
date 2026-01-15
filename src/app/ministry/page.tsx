@@ -162,7 +162,7 @@ export default function MinistryPage() {
         if (!response.ok) throw new Error("Failed to fetch ministries");
         const data = await response.json();
         
-        const transformed = (data && data.length > 0 ? data : dummyMinistries).map((m: any) => ({
+        const transformed = (data || []).map((m: any) => ({
           _id: m._id,
           title: m.title,
           description: m.description,
@@ -180,22 +180,7 @@ export default function MinistryPage() {
         }
       } catch (error) {
         console.error("Failed to load ministries:", error);
-        const transformed = dummyMinistries.map((m) => ({
-          _id: m._id,
-          title: m.title,
-          description: m.description,
-          icon: getIconComponent(m.icon),
-          highlights: m.highlights,
-          cta: {
-            label: m.ctaLabel,
-            href: m.ctaHref,
-          },
-          image: m.image,
-        }));
-        setMinistries(transformed);
-        if (transformed.length > 0) {
-          setExpandedSection(transformed[0]._id);
-        }
+        setMinistries([]);
       } finally {
         setLoading(false);
       }
