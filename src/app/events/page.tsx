@@ -60,7 +60,7 @@ function EventsContent() {
         
         // Filter by ministry if query parameter exists
         if (ministryFilter) {
-          transformed = transformed.filter((event) => event.ministry === ministryFilter);
+          transformed = transformed.filter((event: CalendarEvent) => event.ministry === ministryFilter);
         }
         
         setEvents(transformed);
