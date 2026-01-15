@@ -109,18 +109,39 @@ const NavBar = () => {
     }
   };
 
-  const handlePrayerSubmit = (e: React.FormEvent) => {
+  const handlePrayerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Prayer Request Submitted:", prayerFormData);
-    setPrayerFormData({
-      name: "",
-      email: "",
-      phone: "",
-      category: "Personal",
-      request: "",
-      isConfidential: true,
-    });
-    setPrayerRequestModalOpen(false);
+    try {
+      const response = await fetch("/api/prayer-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(prayerFormData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit prayer request");
+      }
+
+      const result = await response.json();
+      console.log("Prayer Request Submitted Successfully:", result);
+      
+      setPrayerFormData({
+        name: "",
+        email: "",
+        phone: "",
+        category: "Personal",
+        request: "",
+        isConfidential: true,
+      });
+      setPrayerRequestModalOpen(false);
+      
+      alert("Prayer request submitted successfully!");
+    } catch (error) {
+      console.error("Prayer request submission error:", error);
+      alert("Failed to submit prayer request. Please try again.");
+    }
   };
 
   return (
