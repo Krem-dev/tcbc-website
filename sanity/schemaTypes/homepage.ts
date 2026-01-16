@@ -247,6 +247,34 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "serviceTimesSection",
+      title: "Service Times Section",
+      type: "object",
+      fields: [
+        {
+          name: "heading",
+          title: "Section Heading",
+          type: "string",
+          initialValue: "Service Times",
+        },
+        {
+          name: "serviceTimes",
+          title: "Service Times",
+          type: "array",
+          of: [
+            {
+              type: "object",
+              fields: [
+                { name: "day", type: "string", title: "Day of Week" },
+                { name: "time", type: "string", title: "Time" },
+                { name: "service", type: "string", title: "Service Name (optional)" },
+              ],
+            },
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: "contactSection",
       title: "Contact Section",
       type: "object",

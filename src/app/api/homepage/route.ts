@@ -112,6 +112,14 @@ export async function GET() {
             rating
           }
         },
+        serviceTimesSection {
+          heading,
+          serviceTimes[] {
+            day,
+            time,
+            service
+          }
+        },
         contactSection {
           heading,
           description,

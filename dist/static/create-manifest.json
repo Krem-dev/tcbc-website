@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "createdAt": "2026-01-16T08:28:32.778Z",
+  "createdAt": "2026-01-16T08:37:17.936Z",
   "workspaces": [
     {
       "name": "TCBC",
@@ -12,7 +12,7 @@
       "mediaLibrary": {
         "enabled": false
       },
-      "schema": "e37b89bc.create-schema.json",
+      "schema": "e0f93f5b.create-schema.json",
       "tools": "d57bf8ec.create-tools.json"
     }
   ],
