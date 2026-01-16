@@ -10,7 +10,13 @@ export async function GET() {
         heroSection {
           mainHeading,
           subHeading,
-          backgroundImage,
+          backgroundImage {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          },
           ctaButtons[] {
             text,
             link,
@@ -20,9 +26,21 @@ export async function GET() {
         pastorWelcome {
           heading,
           pastorName,
-          pastorImage,
+          pastorImage {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          },
           welcomeMessage,
-          signature
+          signature {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          }
         },
         upcomingEvents {
           heading,
@@ -34,8 +52,28 @@ export async function GET() {
             endDate,
             location,
             description,
-            image,
+            image {
+              asset-> {
+                _id,
+                url
+              },
+              alt
+            },
             category
+          },
+          customEvents[] {
+            title,
+            date,
+            location,
+            description,
+            poster {
+              asset-> {
+                _id,
+                url
+              },
+              alt
+            },
+            link
           },
           viewAllLink
         },

@@ -123,6 +123,30 @@ export default defineType({
           validation: (Rule) => Rule.max(3),
         },
         {
+          name: "customEvents",
+          title: "Custom Event Cards with Posters",
+          type: "array",
+          of: [
+            {
+              type: "object",
+              fields: [
+                { name: "title", type: "string", title: "Event Title" },
+                { name: "date", type: "datetime", title: "Event Date" },
+                { name: "location", type: "string", title: "Location" },
+                { name: "description", type: "text", title: "Description", rows: 3 },
+                { 
+                  name: "poster", 
+                  type: "image", 
+                  title: "Event Poster/Image",
+                  options: { hotspot: true }
+                },
+                { name: "link", type: "string", title: "Event Link (optional)" },
+              ],
+            },
+          ],
+          validation: (Rule) => Rule.max(6),
+        },
+        {
           name: "viewAllLink",
           title: "View All Events Link",
           type: "string",

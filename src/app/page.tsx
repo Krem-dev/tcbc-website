@@ -31,6 +31,8 @@ export default function HomePage() {
         const response = await fetch('/api/homepage');
         if (response.ok) {
           const data = await response.json();
+          console.log('Homepage data received:', data);
+          console.log('Pastor name from API:', data?.pastorWelcome?.pastorName);
           setHomepageContent(data);
         }
       } catch (error) {
