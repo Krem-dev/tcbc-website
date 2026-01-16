@@ -59,6 +59,13 @@ export default defineType({
       },
     }),
     defineField({
+      name: "ministry",
+      title: "Ministry",
+      type: "reference",
+      to: [{ type: "ministry" }],
+      description: "Select which ministry this event is associated with",
+    }),
+    defineField({
       name: "image",
       title: "Event Image",
       type: "image",

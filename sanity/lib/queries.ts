@@ -5,7 +5,13 @@ export const BLOG_QUERY = `
     slug,
     excerpt,
     content,
-    image,
+    image {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    },
     author,
     category,
     publishedAt
@@ -19,7 +25,13 @@ export const BLOG_BY_SLUG_QUERY = `
     slug,
     excerpt,
     content,
-    image,
+    image {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    },
     author,
     category,
     publishedAt

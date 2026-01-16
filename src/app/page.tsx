@@ -17,10 +17,30 @@ export default function HomePage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isHoverable, setIsHoverable] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [homepageContent, setHomepageContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const fetchHomepageContent = async () => {
+      try {
+        const response = await fetch('/api/homepage');
+        if (response.ok) {
+          const data = await response.json();
+          setHomepageContent(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch homepage content:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHomepageContent();
   }, []);
 
   useEffect(() => {
@@ -140,8 +160,8 @@ export default function HomePage() {
             <div className="flex justify-center lg:justify-start">
               <div className="relative w-72 h-72 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
                 <Image
-                  src="/bib-4.jpg"
-                  alt="Pastor John Smith"
+                  src={homepageContent?.pastorWelcome?.pastorImage?.asset?.url || "/bib-4.jpg"}
+                  alt={homepageContent?.pastorWelcome?.pastorName || "Pastor John Smith"}
                   fill
                   className="object-cover"
                 />
@@ -151,16 +171,34 @@ export default function HomePage() {
             {/* Content */}
             <div className="flex flex-col justify-center">
               <p className="font-aeonik text-xs font-bold uppercase tracking-widest text-[#7c01cd] mb-3">
-                Welcome From Our Pastor
+                {homepageContent?.pastorWelcome?.heading || "Welcome From Our Pastor"}
               </p>
 
               <h3 className="font-satoshi text-3xl font-bold text-[#48007e] mb-4">
-                Pastor John Smith
+                {homepageContent?.pastorWelcome?.pastorName || "Pastor John Smith"}
               </h3>
 
-              <p className="font-aeonik text-base text-gray-700 leading-relaxed mb-6">
-                "Welcome to The Chosen Bible Church. We are a community of believers committed to experiencing God's transformative power. Whether you're visiting for the first time or part of our family, you are valued and loved. Join us in worship, fellowship, and service as we grow together in Christ."
-              </p>
+              <div className="font-aeonik text-base text-gray-700 leading-relaxed mb-6">
+                {homepageContent?.pastorWelcome?.welcomeMessage ? (
+                  homepageContent.pastorWelcome.welcomeMessage.map((block: any, idx: number) => (
+                    <p key={idx} className="mb-4">
+                      {block.children?.map((child: any, i: number) => (
+                        <span key={i}>
+                          {child.marks?.includes("strong") ? (
+                            <strong>{child.text}</strong>
+                          ) : (
+                            child.text
+                          )}
+                        </span>
+                      ))}
+                    </p>
+                  ))
+                ) : (
+                  <p>
+                    "Welcome to The Chosen Bible Church. We are a community of believers committed to experiencing God's transformative power. Whether you're visiting for the first time or part of our family, you are valued and loved. Join us in worship, fellowship, and service as we grow together in Christ."
+                  </p>
+                )}
+              </div>
 
               <Link
                 href="/about"
@@ -184,10 +222,10 @@ export default function HomePage() {
               id="events-title"
               className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl"
             >
-              Upcoming <span className="text-[#7c01cd]">Events</span>
+              {homepageContent?.upcomingEvents?.heading || "Upcoming"} <span className="text-[#7c01cd]">Events</span>
             </h2>
             <p className="font-aeonik mx-auto max-w-3xl text-lg text-gray-600">
-              Join The Chosen Bible Church for worship, fellowship, and community events. Everyone is welcome to participate and grow together in faith.
+              {homepageContent?.upcomingEvents?.description || "Join The Chosen Bible Church for worship, fellowship, and community events. Everyone is welcome to participate and grow together in faith."}
             </p>
           </div>
 

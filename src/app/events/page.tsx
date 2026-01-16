@@ -43,11 +43,16 @@ function EventsContent() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/events");
+        // Build API URL with ministry filter if present
+        const apiUrl = ministryFilter 
+          ? `/api/events?ministry=${encodeURIComponent(ministryFilter)}`
+          : "/api/events";
+          
+        const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Failed to fetch events");
         const data = await response.json();
         
-        let transformed = (data || []).map((event: any) => ({
+        const transformed = (data || []).map((event: any) => ({
           _id: event._id,
           title: event.title,
           date: new Date(event.startDate).getDate(),
@@ -55,13 +60,8 @@ function EventsContent() {
           location: event.location,
           category: event.category,
           description: event.description,
-          ministry: event.ministry,
+          ministry: event.ministry?.title || event.ministry,
         }));
-        
-        // Filter by ministry if query parameter exists
-        if (ministryFilter) {
-          transformed = transformed.filter((event: CalendarEvent) => event.ministry === ministryFilter);
-        }
         
         setEvents(transformed);
       } catch (error) {
@@ -95,15 +95,20 @@ function EventsContent() {
   };
 
   const getEventsForDay = (day: number) => {
-    let dayEvents = events.filter((e) => e.date === day);
+    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    let dayEvents = events.filter((e) => {
+      const eventDate = new Date(e.startDate);
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === currentDate.getMonth() &&
+             eventDate.getFullYear() === currentDate.getFullYear();
+    });
     
     // Apply date filter if set
     if (filterDate) {
-      const eventDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const selectedDate = new Date(filterDate);
       
       // Only show events on the selected date
-      if (eventDate.toDateString() !== selectedDate.toDateString()) {
+      if (targetDate.toDateString() !== selectedDate.toDateString()) {
         dayEvents = [];
       }
     }

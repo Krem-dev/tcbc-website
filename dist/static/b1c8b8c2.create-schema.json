@@ -1,0 +1,1470 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "excerpt",
+        "type": "text"
+      },
+      {
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          },
+          {
+            "options": {
+              "hotspot": true
+            },
+            "type": "image"
+          }
+        ],
+        "name": "content",
+        "type": "array"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Featured Image"
+      },
+      {
+        "name": "author",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Faith",
+              "value": "faith"
+            },
+            {
+              "title": "Community",
+              "value": "community"
+            },
+            {
+              "title": "News",
+              "value": "news"
+            },
+            {
+              "title": "Devotional",
+              "value": "devotional"
+            },
+            {
+              "title": "Events",
+              "value": "events"
+            }
+          ]
+        },
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "publishedAt",
+        "type": "datetime"
+      }
+    ],
+    "name": "blog",
+    "type": "document",
+    "title": "Blog Posts"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "startDate",
+        "type": "datetime",
+        "title": "Start Date & Time"
+      },
+      {
+        "name": "endDate",
+        "type": "datetime",
+        "title": "End Date & Time"
+      },
+      {
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Worship",
+              "value": "worship"
+            },
+            {
+              "title": "Community",
+              "value": "community"
+            },
+            {
+              "title": "Youth",
+              "value": "youth"
+            },
+            {
+              "title": "Women",
+              "value": "women"
+            },
+            {
+              "title": "Men",
+              "value": "men"
+            },
+            {
+              "title": "Children",
+              "value": "children"
+            },
+            {
+              "title": "Other",
+              "value": "other"
+            }
+          ]
+        },
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "description": "Select which ministry this event is associated with",
+        "to": [
+          {
+            "type": "ministry"
+          }
+        ],
+        "name": "ministry",
+        "type": "reference"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Event Image"
+      },
+      {
+        "initialValue": false,
+        "name": "isFeatured",
+        "type": "boolean",
+        "title": "Featured Event"
+      }
+    ],
+    "name": "event",
+    "type": "document",
+    "title": "Events"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "description": "Key points about this ministry",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "highlights",
+        "type": "array"
+      },
+      {
+        "initialValue": "Get Involved",
+        "name": "ctaLabel",
+        "type": "string",
+        "title": "CTA Button Label"
+      },
+      {
+        "initialValue": "/contact",
+        "name": "ctaHref",
+        "type": "string",
+        "title": "CTA Button Link"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Heart",
+              "value": "Heart"
+            },
+            {
+              "title": "Users",
+              "value": "Users"
+            },
+            {
+              "title": "Smile",
+              "value": "Smile"
+            },
+            {
+              "title": "Baby",
+              "value": "Baby"
+            },
+            {
+              "title": "Lightbulb",
+              "value": "Lightbulb"
+            },
+            {
+              "title": "MessageSquare",
+              "value": "MessageSquare"
+            }
+          ]
+        },
+        "description": "Lucide icon name (e.g., Heart, Users, Smile, Baby, Lightbulb, MessageSquare)",
+        "name": "icon",
+        "type": "string",
+        "title": "Icon Name"
+      },
+      {
+        "description": "Order in which ministries appear (1-6)",
+        "name": "order",
+        "type": "number",
+        "title": "Display Order"
+      }
+    ],
+    "name": "ministry",
+    "type": "document",
+    "title": "Ministries"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "name": "phone",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Personal",
+              "value": "Personal"
+            },
+            {
+              "title": "Family & Relationships",
+              "value": "Family & Relationships"
+            },
+            {
+              "title": "Health & Healing",
+              "value": "Health & Healing"
+            },
+            {
+              "title": "Thanksgiving & Praise",
+              "value": "Thanksgiving & Praise"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "Personal",
+                  "Family & Relationships",
+                  "Health & Healing",
+                  "Thanksgiving & Praise"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "rows": 5,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "request",
+        "type": "text",
+        "title": "Prayer Request"
+      },
+      {
+        "initialValue": true,
+        "name": "isConfidential",
+        "type": "boolean",
+        "title": "Keep Confidential"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "New",
+              "value": "new"
+            },
+            {
+              "title": "In Prayer",
+              "value": "in-prayer"
+            },
+            {
+              "title": "Answered",
+              "value": "answered"
+            },
+            {
+              "title": "Archived",
+              "value": "archived"
+            }
+          ]
+        },
+        "initialValue": "new",
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "submittedAt",
+        "type": "datetime"
+      }
+    ],
+    "name": "prayerRequest",
+    "type": "document",
+    "title": "Prayer Requests"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "speaker",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "name": "excerpt",
+        "type": "text"
+      },
+      {
+        "name": "series",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID)",
+        "name": "videoUrl",
+        "type": "url",
+        "title": "Video URL"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "date",
+        "type": "datetime"
+      },
+      {
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "description",
+        "type": "array"
+      }
+    ],
+    "name": "sermon",
+    "type": "document",
+    "title": "Sermons"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Organization Name"
+      },
+      {
+        "rows": 4,
+        "name": "description",
+        "type": "text",
+        "title": "Organization Description"
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "title": "Email Address"
+      },
+      {
+        "name": "phone",
+        "type": "string",
+        "title": "Phone Number"
+      },
+      {
+        "rows": 3,
+        "name": "address",
+        "type": "text",
+        "title": "Physical Address"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "day",
+                "type": "string"
+              },
+              {
+                "name": "time",
+                "type": "string"
+              }
+            ],
+            "type": "object",
+            "name": "serviceHour"
+          }
+        ],
+        "name": "hours",
+        "type": "array",
+        "title": "Service Hours"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "platform",
+                "type": "string",
+                "title": "Platform (Facebook, Instagram, etc)"
+              },
+              {
+                "name": "url",
+                "type": "string",
+                "title": "URL"
+              }
+            ],
+            "type": "object",
+            "name": "socialLink"
+          }
+        ],
+        "name": "socialLinks",
+        "type": "array",
+        "title": "Social Media Links"
+      },
+      {
+        "rows": 4,
+        "name": "mission",
+        "type": "text",
+        "title": "Mission Statement"
+      },
+      {
+        "rows": 4,
+        "name": "vision",
+        "type": "text",
+        "title": "Vision Statement"
+      }
+    ],
+    "name": "organization",
+    "type": "document",
+    "title": "Organization Settings"
+  },
+  {
+    "fields": [
+      {
+        "initialValue": "Homepage",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Page Title"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "The Chosen Bible Church",
+            "name": "mainHeading",
+            "type": "string"
+          },
+          {
+            "rows": 2,
+            "initialValue": "A place where faith meets community, and hearts find purpose.",
+            "name": "subHeading",
+            "type": "text"
+          },
+          {
+            "options": {
+              "hotspot": true
+            },
+            "name": "backgroundImage",
+            "type": "image"
+          },
+          {
+            "of": [
+              {
+                "fields": [
+                  {
+                    "name": "text",
+                    "type": "string",
+                    "title": "Button Text"
+                  },
+                  {
+                    "name": "link",
+                    "type": "string",
+                    "title": "Button Link"
+                  },
+                  {
+                    "options": {
+                      "list": [
+                        "primary",
+                        "secondary"
+                      ]
+                    },
+                    "name": "style",
+                    "type": "string",
+                    "title": "Button Style"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "name": "ctaButtons",
+            "type": "array",
+            "title": "Call to Action Buttons"
+          }
+        ],
+        "name": "heroSection",
+        "type": "object"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Welcome from Our Pastor",
+            "name": "heading",
+            "type": "string",
+            "title": "Section Heading"
+          },
+          {
+            "initialValue": "Pastor John Smith",
+            "name": "pastorName",
+            "type": "string",
+            "title": "Pastor's Name"
+          },
+          {
+            "options": {
+              "hotspot": true
+            },
+            "name": "pastorImage",
+            "type": "image",
+            "title": "Pastor's Photo"
+          },
+          {
+            "of": [
+              {
+                "marks": {
+                  "annotations": [
+                    {
+                      "i18nTitleKey": "inputs.portable-text.annotation.link",
+                      "options": {
+                        "modal": {
+                          "type": "popover"
+                        }
+                      },
+                      "fields": [
+                        {
+                          "validation": [
+                            {
+                              "rules": [
+                                {
+                                  "flag": "uri",
+                                  "constraint": {
+                                    "options": {
+                                      "scheme": [
+                                        "/^http$/",
+                                        "/^https$/",
+                                        "/^tel$/",
+                                        "/^mailto$/"
+                                      ],
+                                      "allowRelative": true,
+                                      "relativeOnly": false,
+                                      "allowCredentials": false
+                                    }
+                                  }
+                                }
+                              ],
+                              "level": "error"
+                            }
+                          ],
+                          "description": "A valid web, email, phone, or relative link.",
+                          "name": "href",
+                          "type": "url",
+                          "title": "Link"
+                        }
+                      ],
+                      "name": "link",
+                      "type": "object"
+                    }
+                  ],
+                  "decorators": [
+                    {
+                      "value": "strong",
+                      "title": "Strong"
+                    },
+                    {
+                      "value": "em",
+                      "title": "Italic"
+                    },
+                    {
+                      "value": "code",
+                      "title": "Code"
+                    },
+                    {
+                      "value": "underline",
+                      "title": "Underline"
+                    },
+                    {
+                      "value": "strike-through",
+                      "title": "Strike"
+                    }
+                  ]
+                },
+                "lists": [
+                  {
+                    "value": "bullet",
+                    "title": "Bulleted list"
+                  },
+                  {
+                    "value": "number",
+                    "title": "Numbered list"
+                  }
+                ],
+                "styles": [
+                  {
+                    "value": "normal",
+                    "title": "Normal"
+                  },
+                  {
+                    "value": "h1",
+                    "title": "Heading 1"
+                  },
+                  {
+                    "value": "h2",
+                    "title": "Heading 2"
+                  },
+                  {
+                    "value": "h3",
+                    "title": "Heading 3"
+                  },
+                  {
+                    "value": "h4",
+                    "title": "Heading 4"
+                  },
+                  {
+                    "value": "h5",
+                    "title": "Heading 5"
+                  },
+                  {
+                    "value": "h6",
+                    "title": "Heading 6"
+                  },
+                  {
+                    "value": "blockquote",
+                    "title": "Quote"
+                  }
+                ],
+                "of": [],
+                "type": "block"
+              }
+            ],
+            "name": "welcomeMessage",
+            "type": "array"
+          },
+          {
+            "name": "signature",
+            "type": "image",
+            "title": "Pastor's Signature Image"
+          }
+        ],
+        "name": "pastorWelcome",
+        "type": "object",
+        "title": "Pastor's Welcome Section"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Upcoming Events",
+            "name": "heading",
+            "type": "string",
+            "title": "Section Heading"
+          },
+          {
+            "rows": 2,
+            "name": "description",
+            "type": "text",
+            "title": "Section Description"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "max",
+                    "constraint": 3
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "of": [
+              {
+                "to": [
+                  {
+                    "type": "event"
+                  }
+                ],
+                "type": "reference",
+                "title": "Reference to events"
+              }
+            ],
+            "name": "featuredEvents",
+            "type": "array"
+          },
+          {
+            "initialValue": "/events",
+            "name": "viewAllLink",
+            "type": "string",
+            "title": "View All Events Link"
+          }
+        ],
+        "name": "upcomingEvents",
+        "type": "object",
+        "title": "Upcoming Events Section"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Our Ministries",
+            "name": "heading",
+            "type": "string",
+            "title": "Section Heading"
+          },
+          {
+            "rows": 2,
+            "name": "description",
+            "type": "text",
+            "title": "Section Description"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "max",
+                    "constraint": 4
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "of": [
+              {
+                "to": [
+                  {
+                    "type": "ministry"
+                  }
+                ],
+                "type": "reference",
+                "title": "Reference to ministries"
+              }
+            ],
+            "name": "featuredMinistries",
+            "type": "array"
+          }
+        ],
+        "name": "ministriesSection",
+        "type": "object"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Recent Sermons",
+            "name": "heading",
+            "type": "string",
+            "title": "Section Heading"
+          },
+          {
+            "rows": 2,
+            "name": "description",
+            "type": "text",
+            "title": "Section Description"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "max",
+                    "constraint": 3
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "of": [
+              {
+                "to": [
+                  {
+                    "type": "sermon"
+                  }
+                ],
+                "type": "reference",
+                "title": "Reference to sermons"
+              }
+            ],
+            "name": "featuredSermons",
+            "type": "array"
+          }
+        ],
+        "name": "recentSermons",
+        "type": "object",
+        "title": "Recent Sermons Section"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "What People Say",
+            "name": "heading",
+            "type": "string",
+            "title": "Section Heading"
+          },
+          {
+            "of": [
+              {
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "title": "Person's Name"
+                  },
+                  {
+                    "name": "role",
+                    "type": "string",
+                    "title": "Role/Title"
+                  },
+                  {
+                    "options": {
+                      "hotspot": true
+                    },
+                    "name": "image",
+                    "type": "image",
+                    "title": "Person's Photo"
+                  },
+                  {
+                    "rows": 4,
+                    "name": "testimonial",
+                    "type": "text",
+                    "title": "Testimonial Text"
+                  },
+                  {
+                    "validation": [
+                      {
+                        "rules": [
+                          {
+                            "flag": "min",
+                            "constraint": 1
+                          },
+                          {
+                            "flag": "max",
+                            "constraint": 5
+                          }
+                        ],
+                        "level": "error"
+                      }
+                    ],
+                    "name": "rating",
+                    "type": "number",
+                    "title": "Rating (1-5)"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "name": "testimonialsList",
+            "type": "array",
+            "title": "Testimonials"
+          }
+        ],
+        "name": "testimonials",
+        "type": "object",
+        "title": "Testimonials Section"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Visit Us",
+            "name": "heading",
+            "type": "string",
+            "title": "Section Heading"
+          },
+          {
+            "rows": 2,
+            "name": "description",
+            "type": "text",
+            "title": "Section Description"
+          },
+          {
+            "of": [
+              {
+                "fields": [
+                  {
+                    "name": "day",
+                    "type": "string"
+                  },
+                  {
+                    "name": "time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "service",
+                    "type": "string",
+                    "title": "Service Name"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "name": "serviceSchedule",
+            "type": "array"
+          },
+          {
+            "of": [
+              {
+                "fields": [
+                  {
+                    "name": "text",
+                    "type": "string",
+                    "title": "Button Text"
+                  },
+                  {
+                    "name": "link",
+                    "type": "string",
+                    "title": "Button Link"
+                  },
+                  {
+                    "name": "icon",
+                    "type": "string",
+                    "title": "Icon Name (Lucide)"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "name": "quickActions",
+            "type": "array",
+            "title": "Quick Action Buttons"
+          }
+        ],
+        "name": "contactSection",
+        "type": "object"
+      }
+    ],
+    "name": "homepage",
+    "type": "document",
+    "title": "Homepage Content"
+  }
+]

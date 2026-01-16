@@ -19,22 +19,46 @@ export default function AboutPage() {
 
   const timeline = [
     {
-      year: "2020",
-      title: "Church Founded",
-      description: "The Chosen Bible Church was established with a vision to build a community of faith, hope, and love.",
-      milestone: "Vision established",
+      year: "Early 2024",
+      title: "Foundation in Prayer",
+      description: "Nearly one year of intense fasting, prayer, and consecration. A small group of believers sought God for direction, and God revealed the vision and identity of the ministry.",
+      milestone: "Spiritual Preparation",
     },
     {
-      year: "2022",
-      title: "Community Growth",
-      description: "Expanded ministry programs and established multiple service locations across the city.",
-      milestone: "Community expansion",
+      year: "Mid-2024",
+      title: "Identity Revealed",
+      description: "God impressed the name The Chosen Bible Church, inspired by 1 Peter 2:9. Clear calling to raise believers who know their identity in Christ.",
+      milestone: "Name & Scriptural Mandate",
     },
     {
-      year: "2024",
-      title: "Digital Ministry Launch",
-      description: "Launched online services and digital platforms to reach a broader audience.",
-      milestone: "Digital transformation",
+      year: "December 1, 2024",
+      title: "Official Launch",
+      description: "TCBC officially launched with first worship location secured at Gloucester South Senior Centre. Venue provided at minimal cost, with services initially held in the evenings.",
+      milestone: "Church Begins",
+    },
+    {
+      year: "January 5, 2025",
+      title: "First Sunday Morning Service",
+      description: "First Sunday morning service held, marking consistency, deeper ministry impact, and growing attendance.",
+      milestone: "New Phase of Growth",
+    },
+    {
+      year: "Dec 2024 – June 29, 2025",
+      title: "Season of Establishment",
+      description: "Gloucester South Senior Centre served as place of worship, fellowship, and spiritual empowerment. Church community grew in unity and vision.",
+      milestone: "Strengthening the Church",
+    },
+    {
+      year: "Mid-2025",
+      title: "Relocation & Expansion",
+      description: "God opened the door to a new property. TCBC secured 2350 Stevenage Drive. Transition marked divine timing and expansion.",
+      milestone: "New Worship Location",
+    },
+    {
+      year: "Future",
+      title: "Building a Lasting Legacy",
+      description: "Vision to acquire land and build a permanent sanctuary. A legacy space for worship, discipleship, and generations to come.",
+      milestone: "Looking Ahead",
     },
   ];
 
@@ -113,7 +137,8 @@ export default function AboutPage() {
   ];
 
   const tabs = [
-    { id: "mission", label: "Our Mission" },
+    { id: "mission", label: "Mission & Vision" },
+    { id: "history", label: "Our History" },
     { id: "journey", label: "Our Journey" },
     { id: "leadership", label: "Leadership" },
   ];
@@ -188,11 +213,8 @@ export default function AboutPage() {
                       Our Mission
                     </h3>
                     <blockquote className="text-xl font-aeonik text-[#48007e] italic leading-relaxed pt-2">
-                      &ldquo;To glorify God by making disciples of Jesus Christ who are transformed by His Word, empowered by His Spirit, and engaged in His mission.&rdquo;
+                      &ldquo;To bring people into a transforming relationship with Jesus Christ and to equip them for impactful Christian living.&rdquo;
                     </blockquote>
-                    <p className="font-aeonik text-gray-600 leading-relaxed pt-2">
-                      We exist to proclaim the Gospel, build a community of believers, serve our neighbors with compassion, and equip people for effective ministry.
-                    </p>
                   </div>
 
                   {/* Vision */}
@@ -206,11 +228,16 @@ export default function AboutPage() {
                       Our Vision
                     </h3>
                     <blockquote className="text-xl font-aeonik text-[#48007e] italic leading-relaxed pt-2">
-                      &ldquo;A thriving community of believers who live out their faith boldly, impact their neighborhoods with Christ's love, and multiply disciples across generations.&rdquo;
+                      &ldquo;To be a beacon of hope and love, uniting people from all nations and generations to serve Ottawa and beyond.&rdquo;
                     </blockquote>
-                    <p className="font-aeonik text-gray-600 leading-relaxed pt-2">
-                      We envision a church where every member discovers their purpose, develops their gifts, and demonstrates the transformative power of the Gospel in their daily lives.
-                    </p>
+                    <div className="space-y-4 pt-4">
+                      <p className="font-aeonik text-gray-700 leading-relaxed">
+                        Beyond transforming lives in the present, the church carries a forward-looking vision: to acquire land and build a beautiful sanctuary, a lasting legacy for generations yet to come. This future home will be a place where children, youth, adults, and families can worship God, grow in His Word, and continue the mission entrusted to us to go into the world to make disciples of all nations.
+                      </p>
+                      <p className="font-aeonik text-gray-700 leading-relaxed">
+                        Today, The Chosen Bible Church stands as a testimony that what begins in prayer is sustained by God's power. From humble beginnings, God is raising a vibrant church that shines His light, nurtures His people, and advances His Kingdom in Ottawa and to the nations.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -310,6 +337,59 @@ export default function AboutPage() {
             </div>
           )}
 
+          {/* History Tab */}
+          {activeTab === "history" && (
+            <div className="space-y-8 sm:space-y-12">
+              <div className="text-center">
+                <h2 className="font-satoshi mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#48007e]">
+                  History of The Chosen Bible Church
+                </h2>
+                <p className="font-aeonik text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                  A testimony of God's faithfulness, prayer, obedience, and divine orchestration.
+                </p>
+              </div>
+
+              {/* Main History Content */}
+              <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 sm:p-12 border border-gray-200">
+                <div className="prose prose-lg max-w-none font-aeonik text-gray-700 leading-relaxed space-y-6">
+                  <p>
+                    The story of The Chosen Bible Church is a testimony of God's faithfulness, prayer, obedience, and divine orchestration. Though the ministry officially began on December 1st, 2024, its foundation was laid through nearly a year of intense fasting, prayer, and spiritual preparation. A small group of devoted brethren sought the Lord earnestly, believing that God desired to birth a new work in the city of Ottawa. In those months of consecration, the Lord refined their hearts, strengthened their faith, and revealed His purpose.
+                  </p>
+
+                  <p>
+                    During these prayer seasons, God impressed upon the leadership a name that would define the identity and destiny of the ministry: <strong className="text-[#48007e]">The Chosen Bible Church</strong>. The name was inspired by 1 Peter 2:9, which declares, <em>"But you are a chosen generation, a royal priesthood, a holy nation, a peculiar people…"</em> This verse captured the calling to raise a people who know who they are in Christ, walk in His light, and proclaim His praises to the nations.
+                  </p>
+
+                  <p>
+                    When the church launched on December 1st, 2024, the Lord confirmed His hand upon the work by granting the ministry its first worship location at the Gloucester South Senior Centre. This provision was a miracle in itself, the church was able to meet there for a very small cost, easing the financial burden in its infancy. In its first month, the church held its services in the evenings, building momentum and community. Then, on January 5th, 2025, The Chosen Bible Church held its first Sunday morning service, marking the beginning of a new chapter of growth, consistency, and deeper ministry impact.
+                  </p>
+
+                  <p>
+                    From December 1, 2024, to June 29, 2025, the Senior Centre served as a place of worship, fellowship, and spiritual empowerment. By divine arrangement, God opened a door to a new worship location. The leadership successfully secured the property at <strong className="text-[#48007e]">2350 Stevenage Drive</strong>, where the congregation now worships. The timing of this transition testified to the grace and precision with which God guides His church.
+                  </p>
+
+                  <p>
+                    From its earliest days, The Chosen Bible Church has embraced the calling to become a multinational, multigenerational, and multicultural community of believers. The heart of the ministry is to create a spiritual home where people from every background can encounter God, grow in faith, and discover their purpose.
+                  </p>
+                </div>
+
+
+                {/* Future Vision */}
+                <div className="mt-8 bg-gradient-to-r from-[#48007e]/5 to-[#7c01cd]/5 rounded-2xl p-8 border border-[#48007e]/10">
+                  <h4 className="font-satoshi text-xl font-bold text-[#48007e] mb-4">
+                    Looking Ahead
+                  </h4>
+                  <p className="font-aeonik text-gray-700 leading-relaxed">
+                    Beyond transforming lives in the present, the church carries a forward-looking vision: to acquire land and build a beautiful sanctuary, a lasting legacy for generations yet to come. This future home will be a place where children, youth, adults, and families can worship God, grow in His Word, and continue the mission entrusted to us to go into the world to make disciples of all nations.
+                  </p>
+                  <p className="font-aeonik text-gray-700 leading-relaxed mt-4">
+                    Today, The Chosen Bible Church stands as a testimony that what begins in prayer is sustained by God's power. From humble beginnings, God is raising a vibrant church that shines His light, nurtures His people, and advances His Kingdom in Ottawa and to the nations.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Journey Tab */}
           {activeTab === "journey" && (
             <div>
@@ -340,8 +420,8 @@ export default function AboutPage() {
                       >
                         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
                           <div className="flex items-center space-x-4 mb-4">
-                            <div className="w-16 h-16 bg-[#48007e] rounded-full flex items-center justify-center">
-                              <span className="font-satoshi text-white font-bold text-lg">
+                            <div className="w-20 h-20 bg-[#48007e] rounded-full flex items-center justify-center p-2">
+                              <span className="font-satoshi text-white font-bold text-xs text-center leading-tight">
                                 {item.year}
                               </span>
                             </div>
