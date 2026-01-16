@@ -109,6 +109,13 @@ const NavBar = () => {
     }
   };
 
+  const openModal = (modalSetter: (value: boolean) => void) => {
+    setMembershipModalOpen(false);
+    setPrayerRequestModalOpen(false);
+    setGiveModalOpen(false);
+    modalSetter(true);
+  };
+
   const handlePrayerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -309,14 +316,14 @@ const NavBar = () => {
 
         <div className="hidden lg:flex items-center gap-3">
           <button
-            onClick={() => setPrayerRequestModalOpen(true)}
+            onClick={() => openModal(setPrayerRequestModalOpen)}
             className="rounded-full font-aeonik font-semibold text-[#48007e] border-2 transition-all duration-300 hover:bg-[#48007e]/5 px-5 py-2 text-sm xl:px-6 xl:py-2 xl:text-base"
             style={{ borderColor: "#48007e" }}
           >
             Prayer Request
           </button>
           <button
-            onClick={() => setMembershipModalOpen(true)}
+            onClick={() => openModal(setMembershipModalOpen)}
             className="rounded-full font-aeonik font-semibold text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg px-5 py-2 text-sm xl:px-6 xl:py-2 xl:text-base"
             style={{ backgroundColor: "#48007e" }}
           >
@@ -469,7 +476,7 @@ const NavBar = () => {
             <li className="px-6 pt-4">
               <button
                 onClick={() => {
-                  setMembershipModalOpen(true);
+                  openModal(setMembershipModalOpen);
                   setMenuOpen(false);
                 }}
                 className="block w-full text-center px-6 py-3 rounded-lg font-aeonik font-semibold text-white transition-all duration-300 hover:opacity-90"
@@ -492,7 +499,11 @@ const NavBar = () => {
         {giveModalOpen && (
           <div
             className="fixed left-0 right-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300"
-            onClick={() => setGiveModalOpen(false)}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setGiveModalOpen(false);
+              }
+            }}
             style={{ top: '4rem', bottom: 0 }}
           >
             <motion.div
@@ -564,7 +575,11 @@ const NavBar = () => {
         {prayerRequestModalOpen && (
           <div
             className="fixed left-0 right-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300"
-            onClick={() => setPrayerRequestModalOpen(false)}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setPrayerRequestModalOpen(false);
+              }
+            }}
             style={{ top: '4rem', bottom: 0 }}
           >
             <motion.div
@@ -594,13 +609,14 @@ const NavBar = () => {
                   {/* Name */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Your Name
+                      Your Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       name="name"
                       value={prayerFormData.name}
                       onChange={handlePrayerInputChange}
+                      required
                       placeholder="Enter your name"
                       className="w-full bg-transparent border-b-2 border-[#48007e] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7c01cd] transition pb-2"
                     />

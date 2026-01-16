@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface MembershipModalProps {
   isOpen: boolean;
@@ -21,6 +22,15 @@ const MembershipModal: React.FC<MembershipModalProps> = ({ isOpen, onClose }) =>
   });
 
   const [submitted, setSubmitted] = useState(false);
+
+  const ministries = [
+    { _id: "1", name: "Children Teachers Ministry" },
+    { _id: "2", name: "Facilities and Decor Ministry" },
+    { _id: "3", name: "Technical Team" },
+    { _id: "4", name: "Welcome Team" },
+    { _id: "5", name: "Music Ministry" },
+    { _id: "6", name: "Media Ministry" },
+  ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -56,19 +66,28 @@ const MembershipModal: React.FC<MembershipModalProps> = ({ isOpen, onClose }) =>
     }, 2000);
   };
 
-  if (!isOpen) return null;
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   return (
-    <div 
-      className={`fixed left-0 right-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
-      onClick={onClose}
-      style={{ top: '4rem', bottom: 0 }}
-    >
-      <div 
-        className={`bg-[#48007e] rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto transform transition-all duration-300 ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
-        onClick={(e) => e.stopPropagation()}
-        style={{ margin: 'auto' }}
-      >
+    <AnimatePresence>
+      {isOpen && (
+        <div 
+          className="fixed left-0 right-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300"
+          onClick={handleBackdropClick}
+          style={{ top: '4rem', bottom: 0 }}
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#48007e] rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto"
+            style={{ margin: 'auto' }}
+          >
         {/* Close Button */}
         <div className="flex justify-end p-6">
           <button
@@ -140,7 +159,23 @@ const MembershipModal: React.FC<MembershipModalProps> = ({ isOpen, onClose }) =>
                 </div>
               </div>
 
-              {/* Contact Information */}
+              {/* Phone Number - Required */}
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-3">
+                  Phone Number <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-transparent border-b-2 border-white text-white placeholder-white/50 focus:outline-none focus:border-white transition pb-2"
+                  placeholder="Phone Number"
+                />
+              </div>
+
+              {/* Email Address - Optional */}
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-3">
                   Email Address
@@ -150,93 +185,51 @@ const MembershipModal: React.FC<MembershipModalProps> = ({ isOpen, onClose }) =>
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  required
                   className="w-full bg-transparent border-b-2 border-white text-white placeholder-white/50 focus:outline-none focus:border-white transition pb-2"
                   placeholder="Email Address"
                 />
               </div>
 
+              {/* City - Optional */}
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-3">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full bg-transparent border-b-2 border-white text-white placeholder-white/50 focus:outline-none focus:border-white transition pb-2"
-                  placeholder="Phone Number"
-                />
-              </div>
-
-              {/* Address */}
-              <div>
-                <label className="block text-sm font-medium text-white/80 mb-3">
-                  Street Address
+                  City
                 </label>
                 <input
                   type="text"
-                  name="address"
-                  value={formData.address}
+                  name="city"
+                  value={formData.city}
                   onChange={handleChange}
                   className="w-full bg-transparent border-b-2 border-white text-white placeholder-white/50 focus:outline-none focus:border-white transition pb-2"
-                  placeholder="Street Address"
+                  placeholder="City"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-white/80 mb-3">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className="w-full bg-transparent border-b-2 border-white text-white placeholder-white/50 focus:outline-none focus:border-white transition pb-2"
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white/80 mb-3">
-                    Postal Code
-                  </label>
-                  <input
-                    type="text"
-                    name="postalCode"
-                    value={formData.postalCode}
-                    onChange={handleChange}
-                    className="w-full bg-transparent border-b-2 border-white text-white placeholder-white/50 focus:outline-none focus:border-white transition pb-2"
-                    placeholder="Postal Code"
-                  />
-                </div>
-              </div>
-
-              {/* Interests */}
+              {/* Areas of Interest */}
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-4">
-                  Areas of Interest
+                  Areas of Interest (Ministries)
                 </label>
                 <div className="grid grid-cols-2 gap-4">
-                  {["Worship", "Bible Study", "Youth Ministry", "Community Service"].map(
-                    (interest) => (
-                      <label key={interest} className="flex items-center cursor-pointer">
+                  {ministries.length > 0 ? (
+                    ministries.map((ministry) => (
+                      <label key={ministry._id} className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={formData.interests.includes(interest)}
-                          onChange={() => handleCheckboxChange(interest)}
-                          className="w-4 h-4 rounded border-[#7c01cd] bg-white/20 text-white focus:ring-white"
+                          checked={formData.interests.includes(ministry.name)}
+                          onChange={() => handleCheckboxChange(ministry.name)}
+                          className="w-4 h-4 rounded accent-white"
                         />
-                        <span className="ml-3 text-white/80 text-sm">{interest}</span>
+                        <span className="ml-3 text-white/80 text-sm">{ministry.name}</span>
                       </label>
-                    )
+                    ))
+                  ) : (
+                    <p className="text-white/60 text-sm col-span-2">Loading ministries...</p>
                   )}
                 </div>
               </div>
 
-              {/* Button */}
+              {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full px-6 py-3 bg-white text-[#48007e] font-semibold rounded-lg hover:bg-[#7c01cd] hover:text-white transition-colors mt-8"
@@ -246,8 +239,10 @@ const MembershipModal: React.FC<MembershipModalProps> = ({ isOpen, onClose }) =>
             </form>
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
 
