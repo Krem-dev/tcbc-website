@@ -7,40 +7,42 @@ import { ArrowRight, MapPin, Clock } from "lucide-react";
 
 const CallToAction: React.FC = () => {
   const [serviceTimes, setServiceTimes] = useState<any[]>([]);
+  const [organizationData, setOrganizationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const fallbackTimes = [
-    { day: "Sunday", time: "10:00 AM - 11:30 AM", location: "Main Sanctuary" },
-    { day: "Wednesday", time: "7:00 PM - 8:30 PM", location: "Fellowship Hall" },
-    { day: "Friday", time: "6:00 PM - 7:00 PM", location: "Prayer Room" },
-  ];
-
   useEffect(() => {
-    const fetchServiceTimes = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/homepage");
-        if (response.ok) {
-          const data = await response.json();
-          if (data?.serviceTimesSection?.serviceTimes && data.serviceTimesSection.serviceTimes.length > 0) {
-            setServiceTimes(data.serviceTimesSection.serviceTimes);
-          } else {
-            setServiceTimes(fallbackTimes);
+        const [homepageRes, orgRes] = await Promise.all([
+          fetch("/api/homepage"),
+          fetch("/api/organization")
+        ]);
+
+        if (homepageRes.ok) {
+          const homepageData = await homepageRes.json();
+          if (homepageData?.serviceTimesSection?.serviceTimes && homepageData.serviceTimesSection.serviceTimes.length > 0) {
+            setServiceTimes(homepageData.serviceTimesSection.serviceTimes);
           }
-        } else {
-          setServiceTimes(fallbackTimes);
+        }
+
+        if (orgRes.ok) {
+          const orgData = await orgRes.json();
+          setOrganizationData(orgData);
         }
       } catch (error) {
-        console.error("Failed to fetch service times:", error);
-        setServiceTimes(fallbackTimes);
+        console.error("Failed to fetch data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchServiceTimes();
+    fetchData();
   }, []);
 
-  const meetingTimes = serviceTimes.length > 0 ? serviceTimes : fallbackTimes;
+  const meetingTimes = serviceTimes;
+  const address = organizationData?.address || "";
+  const phone = organizationData?.phone || "";
+  const email = organizationData?.email || "";
 
   return (
     <section className="bg-white py-16 sm:py-20 lg:py-24">
@@ -95,18 +97,27 @@ const CallToAction: React.FC = () => {
             <div className="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-[#48007e]">
               <p className="font-satoshi font-bold text-[#48007e] text-sm mb-3">Location & Contact</p>
               <div className="space-y-2 text-gray-600 text-sm">
-                <p className="font-aeonik flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-[#7c01cd] flex-shrink-0 mt-0.5" />
-                  <span>123 Church Street, Ottawa, ON</span>
-                </p>
-                <p className="font-aeonik flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#7c01cd]" />
-                  <span>(613) 555-0123</span>
-                </p>
-                <p className="font-aeonik flex items-center gap-2">
-                  <span>✉️</span>
-                  <span>info@tcbc.ca</span>
-                </p>
+                {address && (
+                  <p className="font-aeonik flex items-start gap-2">
+                    <MapPin className="w-4 h-4 text-[#7c01cd] flex-shrink-0 mt-0.5" />
+                    <span>{address}</span>
+                  </p>
+                )}
+                {phone && (
+                  <p className="font-aeonik flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#7c01cd]" />
+                    <span>{phone}</span>
+                  </p>
+                )}
+                {email && (
+                  <p className="font-aeonik flex items-center gap-2">
+                    <span>✉️</span>
+                    <span>{email}</span>
+                  </p>
+                )}
+                {!address && !phone && !email && (
+                  <p className="font-aeonik text-gray-400 text-xs italic">Contact information will appear here once added in Sanity</p>
+                )}
               </div>
             </div>
           </div>
