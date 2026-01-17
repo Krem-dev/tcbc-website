@@ -1,16 +1,46 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Clock } from "lucide-react";
 
 const CallToAction: React.FC = () => {
-  const meetingTimes = [
+  const [serviceTimes, setServiceTimes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fallbackTimes = [
     { day: "Sunday", time: "10:00 AM - 11:30 AM", location: "Main Sanctuary" },
     { day: "Wednesday", time: "7:00 PM - 8:30 PM", location: "Fellowship Hall" },
     { day: "Friday", time: "6:00 PM - 7:00 PM", location: "Prayer Room" },
   ];
+
+  useEffect(() => {
+    const fetchServiceTimes = async () => {
+      try {
+        const response = await fetch("/api/homepage");
+        if (response.ok) {
+          const data = await response.json();
+          if (data?.serviceTimesSection?.serviceTimes && data.serviceTimesSection.serviceTimes.length > 0) {
+            setServiceTimes(data.serviceTimesSection.serviceTimes);
+          } else {
+            setServiceTimes(fallbackTimes);
+          }
+        } else {
+          setServiceTimes(fallbackTimes);
+        }
+      } catch (error) {
+        console.error("Failed to fetch service times:", error);
+        setServiceTimes(fallbackTimes);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServiceTimes();
+  }, []);
+
+  const meetingTimes = serviceTimes.length > 0 ? serviceTimes : fallbackTimes;
 
   return (
     <section className="bg-white py-16 sm:py-20 lg:py-24">

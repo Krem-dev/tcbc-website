@@ -45,36 +45,6 @@ export async function GET() {
         upcomingEvents {
           heading,
           description,
-          featuredEvents[]-> {
-            _id,
-            title,
-            startDate,
-            endDate,
-            location,
-            description,
-            image {
-              asset-> {
-                _id,
-                url
-              },
-              alt
-            },
-            category
-          },
-          customEvents[] {
-            title,
-            date,
-            location,
-            description,
-            poster {
-              asset-> {
-                _id,
-                url
-              },
-              alt
-            },
-            link
-          },
           viewAllLink
         },
         ministriesSection {
@@ -137,7 +107,34 @@ export async function GET() {
       }`
     });
 
-    return NextResponse.json(homepage || {});
+    const featuredEvents = await sanityFetch({
+      query: `*[_type == "event" && isFeatured == true] | order(startDate asc)[0..5] {
+        _id,
+        title,
+        startDate,
+        endDate,
+        location,
+        description,
+        image {
+          asset-> {
+            _id,
+            url
+          },
+          alt
+        },
+        category
+      }`
+    });
+
+    const homepageWithEvents = {
+      ...homepage,
+      upcomingEvents: {
+        ...homepage?.upcomingEvents,
+        featuredEvents: featuredEvents || []
+      }
+    };
+
+    return NextResponse.json(homepageWithEvents || {});
   } catch (error) {
     console.error("Failed to fetch homepage content:", error);
     return NextResponse.json(

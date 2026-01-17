@@ -111,18 +111,6 @@ export default defineType({
           rows: 2,
         },
         {
-          name: "featuredEvents",
-          title: "Featured Events",
-          type: "array",
-          of: [
-            {
-              type: "reference",
-              to: [{ type: "event" }],
-            },
-          ],
-          validation: (Rule) => Rule.max(3),
-        },
-        {
           name: "customEvents",
           title: "Custom Event Cards with Posters",
           type: "array",

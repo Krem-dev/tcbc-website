@@ -224,7 +224,7 @@ export default function HomePage() {
               id="events-title"
               className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl"
             >
-              {homepageContent?.upcomingEvents?.heading || "Upcoming"} <span className="text-[#7c01cd]">Events</span>
+              {homepageContent?.upcomingEvents?.heading || "Upcoming Events"}
             </h2>
             <p className="font-aeonik mx-auto max-w-3xl text-lg text-gray-600">
               {homepageContent?.upcomingEvents?.description || "Join The Chosen Bible Church for worship, fellowship, and community events. Everyone is welcome to participate and grow together in faith."}
@@ -237,24 +237,38 @@ export default function HomePage() {
               md:flex-wrap md:justify-center md:overflow-visible md:snap-none
             "
           >
-            <ExpandingCard
-              title="Dominion Service"
-              description="Experience powerful worship at The Chosen Bible Church. Inspiring messages and meaningful fellowship as we walk in dominion."
-              image="/service1.jpg"
-              link="/events"
-            />
-            <ExpandingCard
-              title="CrossOver Service"
-              description="Join us for transformative worship and messages that help you cross over into your destiny at The Chosen Bible Church."
-              image="/service2.jpg"
-              link="/events"
-            />
-            <ExpandingCard
-              title="A Night of Noel"
-              description="Celebrate the season of joy and worship with The Chosen Bible Church as we gather for a night of Noel filled with music and fellowship."
-              image="/service3.jpg"
-              link="/events"
-            />
+            {homepageContent?.upcomingEvents?.featuredEvents && homepageContent.upcomingEvents.featuredEvents.length > 0 ? (
+              homepageContent.upcomingEvents.featuredEvents.map((event: any) => (
+                <ExpandingCard
+                  key={event._id}
+                  title={event.title}
+                  description={event.description || "Join us for this upcoming event at The Chosen Bible Church."}
+                  image={event.image?.asset?.url || "/service1.jpg"}
+                  link="/events"
+                />
+              ))
+            ) : (
+              <>
+                <ExpandingCard
+                  title="Dominion Service"
+                  description="Experience powerful worship at The Chosen Bible Church. Inspiring messages and meaningful fellowship as we walk in dominion."
+                  image="/service1.jpg"
+                  link="/events"
+                />
+                <ExpandingCard
+                  title="CrossOver Service"
+                  description="Join us for transformative worship and messages that help you cross over into your destiny at The Chosen Bible Church."
+                  image="/service2.jpg"
+                  link="/events"
+                />
+                <ExpandingCard
+                  title="A Night of Noel"
+                  description="Celebrate the season of joy and worship with The Chosen Bible Church as we gather for a night of Noel filled with music and fellowship."
+                  image="/service3.jpg"
+                  link="/events"
+                />
+              </>
+            )}
           </div>
         </div>
       </section>
