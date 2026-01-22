@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Loader2, Facebook, Instagram, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Loader2 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import Footer from "@/components/Footer";
 
 const CustomAlert = ({
@@ -141,30 +143,23 @@ export default function ContactPage() {
   const socialMedia = [
     {
       name: "Facebook",
-      url: "https://facebook.com/tcbc",
-      icon: <Facebook size={28} className="text-white" />,
-      color: "bg-blue-600 hover:bg-blue-700",
+      href: "https://web.facebook.com/profile.php?id=61571964212983",
+      description: "Connect with us on Facebook",
+      icon: faFacebook,
+      color: "bg-blue-600 hover:bg-blue-800",
     },
     {
       name: "Instagram",
-      url: "https://instagram.com/tcbc",
-      icon: <Instagram size={28} className="text-white" />,
-      color: "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600",
-    },
-    {
-      name: "X",
-      url: "https://x.com/tcbc",
-      icon: (
-        <svg className="w-7 h-7 text-white fill-current" viewBox="0 0 24 24">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.514l-5.106-6.694L2.306 21.75H-1v-3.308l7.227-8.26L-1.424 2.25h6.514l5.106 6.694L21.75 2.25h3.494zm-1.161 17.52h1.833L7.084 4.126H5.117l12.926 15.644z" />
-        </svg>
-      ),
-      color: "bg-black hover:bg-gray-900",
+      href: "https://www.instagram.com/tcbc_ottawa?igsh=MWtmd2doemwycHFn",
+      description: "Follow us on Instagram",
+      icon: faInstagram,
+      color: "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 hover:from-yellow-500 hover:via-pink-600 hover:to-purple-700",
     },
     {
       name: "YouTube",
-      url: "https://youtube.com/@tcbc",
-      icon: <Youtube size={28} className="text-white" />,
+      href: "https://www.youtube.com/@tcbc_ottawa",
+      description: "Subscribe to us on YouTube",
+      icon: faYoutube,
       color: "bg-red-600 hover:bg-red-700",
     },
   ];
@@ -210,11 +205,11 @@ export default function ContactPage() {
                   Get in Touch
                 </h3>
 
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-8">
                   {/* Name + Email */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                      <label className="block font-aeonik text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
                         Full Name *
                       </label>
                       <input
@@ -223,13 +218,13 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border outline-none border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-[#48007e]/30"
+                        className="w-full bg-transparent border-b-2 border-[#48007e] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7c01cd] transition pb-2"
                         placeholder="Your full name"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-aeonik text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
                         Email Address *
                       </label>
                       <input
@@ -238,16 +233,16 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border outline-none border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-[#48007e]/30"
+                        className="w-full bg-transparent border-b-2 border-[#48007e] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7c01cd] transition pb-2"
                         placeholder="your@email.com"
                       />
                     </div>
                   </div>
 
                   {/* Organization + Phone */}
-                  <div className="grid md:grid-cols-2 gap-5">
+                  <div className="grid md:grid-cols-2 gap-8">
                     <div>
-                      <label className="block font-aeonik text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
                         Organization
                       </label>
                       <input
@@ -255,13 +250,13 @@ export default function ContactPage() {
                         name="organization"
                         value={formData.organization}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border outline-none border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-[#48007e]/30"
+                        className="w-full bg-transparent border-b-2 border-[#48007e] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7c01cd] transition pb-2"
                         placeholder="Organization (Optional)"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-aeonik text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
                         Phone Number *
                       </label>
                       <input
@@ -270,7 +265,7 @@ export default function ContactPage() {
                         value={formData.phone}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border outline-none border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-[#48007e]/30"
+                        className="w-full bg-transparent border-b-2 border-[#48007e] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7c01cd] transition pb-2"
                         placeholder="(613) 555-0000"
                       />
                     </div>
@@ -278,7 +273,7 @@ export default function ContactPage() {
 
                   {/* Message */}
                   <div>
-                    <label className="block font-aeonik text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
                       Message *
                     </label>
                     <textarea
@@ -287,7 +282,7 @@ export default function ContactPage() {
                       onChange={handleInputChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 border outline-none border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-[#48007e]/30 resize-none"
+                      className="w-full bg-transparent border-b-2 border-[#48007e] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#7c01cd] transition pb-2 resize-none"
                       placeholder="Tell us more about your inquiry..."
                     />
                   </div>
@@ -345,20 +340,23 @@ export default function ContactPage() {
               {/* Social Media Section */}
               <div className="pt-8 border-t border-gray-200">
                 <h4 className="font-satoshi text-lg font-bold text-[#48007e] mb-5">
-                  Follow Us
+                  Connect With Us
                 </h4>
                 <div className="flex gap-4">
                   {socialMedia.map((social) => (
                     <a
                       key={social.name}
-                      href={social.url}
+                      href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`p-3 rounded-full transition duration-300 ${social.color}`}
-                      title={social.name}
+                      className={`w-10 h-10 flex items-center justify-center rounded-full ${social.color} hover:opacity-80 transition-all duration-300`}
+                      title={social.description}
                       aria-label={social.name}
                     >
-                      {social.icon}
+                      <FontAwesomeIcon
+                        icon={social.icon}
+                        className="w-5 h-5 text-white text-lg"
+                      />
                     </a>
                   ))}
                 </div>

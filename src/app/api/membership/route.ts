@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import PDFDocument from "pdfkit";
+import { jsPDF } from "jspdf";
 
 interface MembershipFormData {
   firstName: string;
@@ -32,120 +32,145 @@ interface MembershipFormData {
   date: string;
 }
 
-function generatePDF(data: MembershipFormData): Promise<Uint8Array> {
-  return new Promise((resolve, reject) => {
-    const doc = new PDFDocument();
-    const chunks: Uint8Array[] = [];
+function generatePDF(data: MembershipFormData): Uint8Array {
+  const doc = new jsPDF();
+  let yPosition = 15;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 12;
+  const contentWidth = pageWidth - margin * 2;
 
-    doc.on("data", (chunk: Uint8Array) => chunks.push(chunk));
-    doc.on("end", () => {
-      const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-      const result = new Uint8Array(totalLength);
-      let offset = 0;
-      for (const chunk of chunks) {
-        result.set(chunk, offset);
-        offset += chunk.length;
-      }
-      resolve(result);
-    });
-    doc.on("error", reject);
-
-    doc.fontSize(20).font("Helvetica-Bold").text("TCBC MEMBERSHIP APPLICATION FORM", { align: "center" });
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica").text("The Chosen Bible Church", { align: "center" });
-    doc.moveDown(1);
-
-    doc.fontSize(10).text("Kindly complete the following form if you are interested in being a member at The Chosen Bible Church (TCBC). You must be 18 years of age or older.", { align: "left" });
-    doc.moveDown(1);
-
-    doc.fontSize(12).font("Helvetica-Bold").text("PERSONAL INFORMATION");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-
-    doc.text(`First Name: ${data.firstName}`);
-    doc.text(`Last Name: ${data.lastName}`);
-    doc.text(`Preferred Name: ${data.preferredName}`);
-    doc.text(`Date of Birth: ${data.dateOfBirth}`);
-    doc.text(`Gender: ${data.gender}`);
-    doc.text(`Marital Status: ${data.maritalStatus}`);
-    doc.text(`Phone Number: ${data.phoneNumber}`);
-    doc.text(`Email: ${data.email}`);
-    doc.text(`Home Address: ${data.homeAddress}`);
-    doc.moveDown(1);
-
-    doc.fontSize(12).font("Helvetica-Bold").text("CHURCH INFORMATION");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-
-    doc.text(`Member Since: ${data.memberSince || "N/A"}`);
-    doc.text(`How did you hear about TCBC?: ${data.heardAbout}`);
-    doc.text(`Accepted Jesus Christ as Lord and Savior: ${data.acceptedJesus ? "Yes" : "No"}`);
-    doc.text(`Baptized in water by immersion: ${data.baptizedWater ? "Yes" : "No"}`);
-    if (data.baptizedWater) {
-      doc.text(`Year of baptism: ${data.baptizedWaterYear}`);
-    } else if (data.willingBaptism) {
-      doc.text(`Willing to be baptized: ${data.willingBaptism}`);
+  const addTitle = (title: string) => {
+    if (yPosition > pageHeight - 40) {
+      doc.addPage();
+      yPosition = 15;
     }
-    doc.text(`Received baptism in Holy Spirit: ${data.baptizedHolySpirit ? "Yes" : "No"}`);
-    if (data.baptizedHolySpirit) {
-      doc.text(`Year: ${data.baptizedHolySpiritYear}`);
-    } else if (data.willingHolySpirit) {
-      doc.text(`Willing to receive Holy Spirit baptism: ${data.willingHolySpirit}`);
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 8;
+    doc.setDrawColor(72, 0, 126);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 8;
+  };
+
+  const addSectionHeader = (title: string) => {
+    if (yPosition > pageHeight - 35) {
+      doc.addPage();
+      yPosition = 15;
     }
-    doc.text(`Previous Church: ${data.previousChurch || "N/A"}`);
-    doc.moveDown(1);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(72, 0, 126);
+    doc.text(title, margin, yPosition);
+    yPosition += 6;
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 5;
+    doc.setTextColor(0, 0, 0);
+  };
 
-    doc.fontSize(12).font("Helvetica-Bold").text("MINISTRY INTERESTS");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-    if (data.ministryInterests.length > 0) {
-      data.ministryInterests.forEach((ministry) => {
-        doc.text(`• ${ministry}`);
-      });
-    } else {
-      doc.text("No ministries selected");
+  const addField = (label: string, value: string) => {
+    if (yPosition > pageHeight - 12) {
+      doc.addPage();
+      yPosition = 15;
     }
-    doc.moveDown(1);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${label}:`, margin, yPosition);
+    yPosition += 5;
+    doc.setFont("helvetica", "normal");
+    const lines = doc.splitTextToSize(value, contentWidth);
+    doc.text(lines, margin, yPosition);
+    yPosition += lines.length * 4.5 + 2;
+  };
 
-    doc.fontSize(12).font("Helvetica-Bold").text("AVAILABILITY AND COMMITMENT");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-    doc.text(`Willing to serve: ${data.willingServe ? "Yes" : "No"}`);
-    doc.text(`Support with prayers and attendance: ${data.willingPrayers ? "Yes" : "No"}`);
-    doc.text(`Support with tithes and offerings: ${data.willingTithes ? "Yes" : "No"}`);
-    doc.text(`Agree to uphold Church teachings: ${data.agreeTeachings ? "Yes" : "No"}`);
-    doc.text(`Understand membership terms: ${data.understandMembership ? "Yes" : "No"}`);
-    doc.moveDown(1);
+  const addTwoColumnFields = (label1: string, value1: string, label2: string, value2: string) => {
+    if (yPosition > pageHeight - 15) {
+      doc.addPage();
+      yPosition = 15;
+    }
+    const colWidth = (contentWidth - 4) / 2;
+    
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${label1}:`, margin, yPosition);
+    yPosition += 5;
+    doc.setFont("helvetica", "normal");
+    const lines1 = doc.splitTextToSize(value1, colWidth);
+    doc.text(lines1, margin, yPosition);
+    
+    const maxHeight1 = lines1.length * 4.5;
+    
+    doc.setFont("helvetica", "bold");
+    doc.text(`${label2}:`, margin + colWidth + 2, yPosition - 5);
+    doc.setFont("helvetica", "normal");
+    const lines2 = doc.splitTextToSize(value2, colWidth);
+    doc.text(lines2, margin + colWidth + 2, yPosition);
+    
+    const maxHeight2 = lines2.length * 4.5;
+    yPosition += Math.max(maxHeight1, maxHeight2) + 3;
+  };
 
-    doc.fontSize(12).font("Helvetica-Bold").text("DECLARATION");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-    doc.text("I declare that the information provided above is accurate to the best of my knowledge.");
-    doc.moveDown(1);
+  addTitle("TCBC Membership Application");
 
-    doc.fontSize(12).font("Helvetica-Bold").text("SIGNATURE");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-    doc.text(`Applicant's Signature: ${data.signature}`);
-    doc.text(`Date: ${new Date(data.date).toLocaleDateString()}`);
-    doc.moveDown(2);
+  addSectionHeader("Personal Information");
+  addTwoColumnFields("First Name", data.firstName, "Last Name", data.lastName);
+  addField("Preferred Name", data.preferredName);
+  addTwoColumnFields("Date of Birth", data.dateOfBirth, "Gender", data.gender);
+  addTwoColumnFields("Marital Status", data.maritalStatus, "Phone Number", data.phoneNumber);
+  addField("Email Address", data.email);
+  addField("Home Address", data.homeAddress);
 
-    doc.fontSize(10).font("Helvetica-Bold").text("FOR OFFICE USE ONLY");
-    doc.moveDown(0.5);
-    doc.fontSize(10).font("Helvetica");
-    doc.text("Membership Orientation Completed: ☐ Yes ☐ No");
-    doc.text("Date Received: _______________________");
-    doc.text("Church Leader's Signature: _______________________");
+  yPosition += 3;
+  addSectionHeader("Church Information");
+  addTwoColumnFields("Member Since", data.memberSince || "N/A", "How did you hear about TCBC", data.heardAbout);
+  addField("Accepted Jesus Christ as Lord and Savior", data.acceptedJesus ? "Yes" : "No");
+  addField("Baptized in Water by Immersion", data.baptizedWater ? "Yes" : "No");
+  if (data.baptizedWater) {
+    addField("Year of Baptism", data.baptizedWaterYear);
+  } else {
+    addField("Willing to be Baptized at earliest opportunity", data.willingBaptism);
+  }
+  addField("Baptized in Holy Spirit with evidence of speaking in tongues", data.baptizedHolySpirit ? "Yes" : "No");
+  if (data.baptizedHolySpirit) {
+    addField("Year of Holy Spirit Baptism", data.baptizedHolySpiritYear);
+  } else {
+    addField("Willing to receive baptism of Holy Spirit", data.willingHolySpirit);
+  }
+  addField("Previous Church", data.previousChurch || "N/A");
 
-    doc.end();
-  });
+  yPosition += 3;
+  addSectionHeader("Ministry Interests");
+  addField("Selected Ministries", data.ministryInterests.length > 0 ? data.ministryInterests.join(", ") : "None selected");
+
+  yPosition += 3;
+  addSectionHeader("Availability and Commitment");
+  addField("Willing to serve in the church", data.willingServe ? "Yes" : "No");
+  addField("Support with faithful prayers and attendance", data.willingPrayers ? "Yes" : "No");
+  addField("Support with tithes and offerings", data.willingTithes ? "Yes" : "No");
+  addField("Agree to uphold Church teachings and constitution", data.agreeTeachings ? "Yes" : "No");
+  addField("Understand membership terms and conditions", data.understandMembership ? "Yes" : "No");
+
+  yPosition += 3;
+  addSectionHeader("Declaration and Signature");
+  addField("Declaration Accepted", data.declarationAccepted ? "Yes" : "No");
+  addTwoColumnFields("Signature", data.signature, "Date", new Date(data.date).toLocaleDateString());
+
+  yPosition += 5;
+  addSectionHeader("FOR OFFICE USE ONLY");
+  addField("Membership Orientation Completed", "☐ Yes ☐ No");
+  addField("Date Received", "_______________________");
+  addField("Church Leader's Signature", "_______________________");
+
+  return new Uint8Array(Buffer.from(doc.output("arraybuffer")));
 }
 
 export async function POST(request: NextRequest) {
   try {
     const formData: MembershipFormData = await request.json();
 
-    const pdfBuffer = await generatePDF(formData);
+    const pdfBuffer = generatePDF(formData);
 
     const filename = `TCBC_Membership_${formData.firstName}_${formData.lastName}_${Date.now()}.pdf`;
 

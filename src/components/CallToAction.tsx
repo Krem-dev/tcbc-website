@@ -45,7 +45,7 @@ const CallToAction: React.FC = () => {
   const email = organizationData?.email || "";
 
   return (
-    <section className="bg-white py-16 sm:py-20 lg:py-24">
+    <section id="service-times" className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="font-satoshi mb-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-[#48007e]">

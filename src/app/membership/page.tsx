@@ -16,20 +16,20 @@ interface FormData {
   homeAddress: string;
   memberSince: string;
   heardAbout: string;
-  acceptedJesus: boolean;
-  baptizedWater: boolean;
+  acceptedJesus: boolean | null;
+  baptizedWater: boolean | null;
   baptizedWaterYear: string;
   willingBaptism: string;
-  baptizedHolySpirit: boolean;
+  baptizedHolySpirit: boolean | null;
   baptizedHolySpiritYear: string;
   willingHolySpirit: string;
   previousChurch: string;
   ministryInterests: string[];
-  willingServe: boolean;
-  willingPrayers: boolean;
-  willingTithes: boolean;
-  agreeTeachings: boolean;
-  understandMembership: boolean;
+  willingServe: boolean | null;
+  willingPrayers: boolean | null;
+  willingTithes: boolean | null;
+  agreeTeachings: boolean | null;
+  understandMembership: boolean | null;
   declarationAccepted: boolean;
   signature: string;
   date: string;
@@ -48,20 +48,20 @@ export default function MembershipPage() {
     homeAddress: "",
     memberSince: "",
     heardAbout: "",
-    acceptedJesus: false,
-    baptizedWater: false,
+    acceptedJesus: null,
+    baptizedWater: null,
     baptizedWaterYear: "",
     willingBaptism: "",
-    baptizedHolySpirit: false,
+    baptizedHolySpirit: null,
     baptizedHolySpiritYear: "",
     willingHolySpirit: "",
     previousChurch: "",
     ministryInterests: [],
-    willingServe: false,
-    willingPrayers: false,
-    willingTithes: false,
-    agreeTeachings: false,
-    understandMembership: false,
+    willingServe: null,
+    willingPrayers: null,
+    willingTithes: null,
+    agreeTeachings: null,
+    understandMembership: null,
     declarationAccepted: false,
     signature: "",
     date: "",
@@ -92,7 +92,7 @@ export default function MembershipPage() {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData((prev) => ({
         ...prev,
-        [name]: checked,
+        [name]: checked ? true : false,
       }));
     } else {
       setFormData((prev) => ({
@@ -114,20 +114,20 @@ export default function MembershipPage() {
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: boolean } = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = true;
-    if (!formData.lastName.trim()) newErrors.lastName = true;
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = true;
-    if (!formData.gender) newErrors.gender = true;
-    if (!formData.maritalStatus) newErrors.maritalStatus = true;
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = true;
-    if (!formData.email.trim()) newErrors.email = true;
-    if (!formData.homeAddress.trim()) newErrors.homeAddress = true;
-    if (!formData.heardAbout) newErrors.heardAbout = true;
-    if (formData.acceptedJesus === false) newErrors.acceptedJesus = true;
-    if (formData.baptizedWater === false && !formData.willingBaptism.trim()) newErrors.willingBaptism = true;
-    if (formData.baptizedHolySpirit === false && !formData.willingHolySpirit.trim()) newErrors.willingHolySpirit = true;
-    if (!formData.signature.trim()) newErrors.signature = true;
-    if (!formData.date) newErrors.date = true;
+    if (!formData.firstName || !formData.firstName.trim()) newErrors.firstName = true;
+    if (!formData.lastName || !formData.lastName.trim()) newErrors.lastName = true;
+    if (!formData.dateOfBirth || formData.dateOfBirth.trim() === "") newErrors.dateOfBirth = true;
+    if (!formData.gender || formData.gender.trim() === "") newErrors.gender = true;
+    if (!formData.maritalStatus || formData.maritalStatus.trim() === "") newErrors.maritalStatus = true;
+    if (!formData.phoneNumber || !formData.phoneNumber.trim()) newErrors.phoneNumber = true;
+    if (!formData.email || !formData.email.trim()) newErrors.email = true;
+    if (!formData.homeAddress || !formData.homeAddress.trim()) newErrors.homeAddress = true;
+    if (!formData.heardAbout || formData.heardAbout.trim() === "") newErrors.heardAbout = true;
+    if (formData.acceptedJesus !== true) newErrors.acceptedJesus = true;
+    if (formData.baptizedWater === false && (!formData.willingBaptism || !formData.willingBaptism.trim())) newErrors.willingBaptism = true;
+    if (formData.baptizedHolySpirit === false && (!formData.willingHolySpirit || !formData.willingHolySpirit.trim())) newErrors.willingHolySpirit = true;
+    if (!formData.signature || !formData.signature.trim()) newErrors.signature = true;
+    if (!formData.date || formData.date.trim() === "") newErrors.date = true;
     if (!formData.declarationAccepted) newErrors.declarationAccepted = true;
 
     setErrors(newErrors);
@@ -157,7 +157,16 @@ export default function MembershipPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `TCBC_Membership_${formData.firstName}_${formData.lastName}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
         setSubmitted(true);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -197,11 +206,8 @@ export default function MembershipPage() {
               <h2 className="font-satoshi text-4xl font-bold text-gray-800 mb-4">
                 Application Submitted Successfully!
               </h2>
-              <p className="font-aeonik text-lg text-gray-600 mb-2">
-                Thank you for your membership application.
-              </p>
-              <p className="font-aeonik text-gray-600 mb-8">
-                Your form has been received and converted to PDF. A church leader will contact you soon to schedule your membership orientation.
+              <p className="font-aeonik text-lg text-gray-600 mb-8">
+                Your application has been submitted successfully. A church leader will contact you soon to schedule your membership orientation.
               </p>
               <button
                 onClick={() => {
@@ -244,7 +250,7 @@ export default function MembershipPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <div className="mb-12 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+              <div className="mb-12 p-6 bg-[#48007e]/10 border-l-4 border-[#48007e] rounded-lg">
                 <p className="font-aeonik text-gray-700 text-lg">
                   Kindly complete the following form if you are interested in being a member at The Chosen Bible Church (TCBC). You must be 18 years of age or older.
                 </p>
@@ -261,7 +267,6 @@ export default function MembershipPage() {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.firstName ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -275,7 +280,6 @@ export default function MembershipPage() {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.lastName ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -299,7 +303,6 @@ export default function MembershipPage() {
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.dateOfBirth ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -341,7 +344,6 @@ export default function MembershipPage() {
                         name="maritalStatus"
                         value={formData.maritalStatus}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 focus:outline-none transition pb-2 ${
                           errors.maritalStatus ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -361,7 +363,6 @@ export default function MembershipPage() {
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.phoneNumber ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -375,7 +376,6 @@ export default function MembershipPage() {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.email ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -389,7 +389,6 @@ export default function MembershipPage() {
                         name="homeAddress"
                         value={formData.homeAddress}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.homeAddress ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -419,7 +418,6 @@ export default function MembershipPage() {
                           name="heardAbout"
                           value={formData.heardAbout}
                           onChange={handleInputChange}
-                          required
                           className={`w-full bg-transparent border-b-2 text-gray-800 focus:outline-none transition pb-2 ${
                             errors.heardAbout ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                           }`}
@@ -447,7 +445,6 @@ export default function MembershipPage() {
                             checked={formData.acceptedJesus === true}
                             onChange={() => setFormData((prev) => ({ ...prev, acceptedJesus: true }))}
                             className="mr-2"
-                            required
                           />
                           <span className="font-aeonik">Yes</span>
                         </label>
@@ -459,7 +456,6 @@ export default function MembershipPage() {
                             checked={formData.acceptedJesus === false}
                             onChange={() => setFormData((prev) => ({ ...prev, acceptedJesus: false }))}
                             className="mr-2"
-                            required
                           />
                           <span className="font-aeonik">No</span>
                         </label>
@@ -764,10 +760,9 @@ export default function MembershipPage() {
                         <input
                           type="checkbox"
                           name="understandMembership"
-                          checked={formData.understandMembership}
+                          checked={formData.understandMembership === true}
                           onChange={handleInputChange}
                           className="mr-3 w-4 h-4"
-                          required
                         />
                         <span className="font-aeonik font-semibold text-gray-700">I agree to these terms *</span>
                       </label>
@@ -801,7 +796,6 @@ export default function MembershipPage() {
                         value={formData.signature}
                         onChange={handleInputChange}
                         placeholder="Type your full name as signature"
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.signature ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -815,7 +809,6 @@ export default function MembershipPage() {
                         name="date"
                         value={formData.date}
                         onChange={handleInputChange}
-                        required
                         className={`w-full bg-transparent border-b-2 text-gray-800 placeholder-gray-400 focus:outline-none transition pb-2 ${
                           errors.date ? "border-red-500 focus:border-red-600" : "border-[#48007e] focus:border-[#7c01cd]"
                         }`}
@@ -832,8 +825,7 @@ export default function MembershipPage() {
                   disabled={loading}
                   className="flex-1 bg-[#48007e] text-white px-8 py-4 rounded-lg hover:bg-[#7c01cd] transition font-semibold font-satoshi text-lg flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <Download className="w-5 h-5" />
-                  {loading ? "Processing..." : "Submit & Download PDF"}
+                  {loading ? "Processing..." : "Submit"}
                 </button>
               </div>
             </form>

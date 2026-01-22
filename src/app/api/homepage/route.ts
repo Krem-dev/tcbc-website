@@ -17,6 +17,13 @@ export async function GET() {
             },
             alt
           },
+          sliderImages[] {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          },
           ctaButtons[] {
             text,
             link,

@@ -38,7 +38,6 @@ const Footer = () => {
   const footerLinks: FooterLinks = {
     sermons: [
       { name: "Recent Sermons", href: "/sermons" },
-      { name: "Sermon Series", href: "/sermons/series" },
       { name: "Blog", href: "/blog" },
     ],
     church: [
@@ -48,7 +47,6 @@ const Footer = () => {
     ],
     connect: [
       { name: "Contact Us", href: "/contact" },
-      { name: "Prayer Request", href: "/prayer-request" },
     ],
   };
 

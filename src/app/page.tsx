@@ -160,7 +160,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 items-center">
             {/* Image - Circle Design */}
             <div className="flex justify-center lg:justify-start">
-              <div className="relative w-72 h-72 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
+              <div className="relative w-80 h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
                 <Image
                   src={homepageContent?.pastorWelcome?.pastorImage?.asset?.url || "/bib-4.jpg"}
                   alt={homepageContent?.pastorWelcome?.pastorName || "Pastor John Smith"}
@@ -214,14 +214,13 @@ export default function HomePage() {
       </section>
 
       <section
-        id="events"
-        aria-labelledby="events-title"
+        aria-labelledby="service-times-heading"
         className="bg-white py-16 sm:py-20 lg:py-24"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h2
-              id="events-title"
+              id="service-times-heading"
               className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl"
             >
               {homepageContent?.upcomingEvents?.heading || "Upcoming Events"}

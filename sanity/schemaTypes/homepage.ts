@@ -39,6 +39,20 @@ export default defineType({
           },
         },
         {
+          name: "sliderImages",
+          title: "Hero Slider Images",
+          type: "array",
+          of: [
+            {
+              type: "image",
+              options: {
+                hotspot: true,
+              },
+            },
+          ],
+          description: "Add multiple images to create a rotating hero slider. Images will cycle every 8 seconds.",
+        },
+        {
           name: "ctaButtons",
           title: "Call to Action Buttons",
           type: "array",
