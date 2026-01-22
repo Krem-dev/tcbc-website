@@ -169,10 +169,10 @@ const NavBar = () => {
                 <Image
                   src="/TCBC_logo_vector.pdf2-01 (2).png"
                   alt="TCBC Logo"
-                  width={50}
-                  height={40}
+                  width={60}
+                  height={48}
                   priority
-                  className="h-8 sm:h-9 lg:h-10 w-[40px] sm:w-[45px] lg:w-[50px] object-contain"
+                  className="h-10 sm:h-11 lg:h-12 w-[48px] sm:w-[54px] lg:w-[60px] object-contain"
                   onError={() => setLogoError(true)}
                   draggable={false}
                 />
@@ -322,13 +322,13 @@ const NavBar = () => {
           >
             Prayer Request
           </button>
-          <button
-            onClick={() => openModal(setMembershipModalOpen)}
-            className="rounded-full font-aeonik font-semibold text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg px-5 py-2 text-sm xl:px-6 xl:py-2 xl:text-base"
+          <Link
+            href="/membership"
+            className="rounded-full font-aeonik font-semibold text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg px-5 py-2 text-sm xl:px-6 xl:py-2 xl:text-base inline-block"
             style={{ backgroundColor: "#48007e" }}
           >
             Become Member
-          </button>
+          </Link>
         </div>
 
         <button
@@ -474,16 +474,14 @@ const NavBar = () => {
             </li>
 
             <li className="px-6 pt-4">
-              <button
-                onClick={() => {
-                  openModal(setMembershipModalOpen);
-                  setMenuOpen(false);
-                }}
+              <Link
+                href="/membership"
+                onClick={() => setMenuOpen(false)}
                 className="block w-full text-center px-6 py-3 rounded-lg font-aeonik font-semibold text-white transition-all duration-300 hover:opacity-90"
                 style={{ backgroundColor: "#48007e" }}
               >
                 Become Member
-              </button>
+              </Link>
             </li>
           </ul>
         </nav>

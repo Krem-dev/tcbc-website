@@ -45,6 +45,15 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "thumbnail",
+      title: "Thumbnail Image",
+      type: "image",
+      description: "Custom thumbnail for the sermon. If not provided, a default image will be used.",
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
       name: "date",
       title: "Date",
       type: "datetime",

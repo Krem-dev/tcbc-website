@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 export default function AboutPage() {
   const [allowMotion, setAllowMotion] = useState(true);
   const [activeTab, setActiveTab] = useState("mission");
+  const [leadershipCategory, setLeadershipCategory] = useState("board");
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -87,52 +88,256 @@ export default function AboutPage() {
 
   const leadership = [
     {
-      _id: "leader-1",
-      name: "Pastor John Smith",
-      role: "Senior Pastor",
+      _id: "board-1",
+      name: "Board Member 1",
+      role: "Board of Directors",
+      category: "board",
       image: "/bib-4.jpg",
-      email: "john@tcbc.church",
-      phone: "(555) 123-4567",
+      email: "",
+      phone: "",
     },
     {
-      _id: "leader-2",
-      name: "Pastor Sarah Johnson",
-      role: "Associate Pastor",
+      _id: "board-2",
+      name: "Board Member 2",
+      role: "Board of Directors",
+      category: "board",
       image: "/bible-1.jpg",
-      email: "sarah@tcbc.church",
-      phone: "(555) 123-4568",
+      email: "",
+      phone: "",
     },
     {
-      _id: "leader-3",
-      name: "Michael Chen",
-      role: "Worship Director",
+      _id: "board-3",
+      name: "Board Member 3",
+      role: "Board of Directors",
+      category: "board",
       image: "/bible-2.jpg",
-      email: "michael@tcbc.church",
-      phone: "(555) 123-4569",
+      email: "",
+      phone: "",
     },
     {
-      _id: "leader-4",
-      name: "David Martinez",
-      role: "Youth Pastor",
+      _id: "board-4",
+      name: "Board Member 4",
+      role: "Board of Directors",
+      category: "board",
       image: "/bib-4.jpg",
-      email: "david@tcbc.church",
-      phone: "(555) 123-4570",
+      email: "",
+      phone: "",
     },
     {
-      _id: "leader-5",
-      name: "Rebecca Williams",
-      role: "Children's Ministry Director",
+      _id: "board-5",
+      name: "Board Member 5",
+      role: "Board of Directors",
+      category: "board",
       image: "/bible-1.jpg",
-      email: "rebecca@tcbc.church",
-      phone: "(555) 123-4571",
+      email: "",
+      phone: "",
     },
     {
-      _id: "leader-6",
-      name: "James Thompson",
-      role: "Missions Director",
+      _id: "council-1",
+      name: "Council Leader 1",
+      role: "Council Member",
+      category: "council",
       image: "/bible-2.jpg",
-      email: "james@tcbc.church",
-      phone: "(555) 123-4572",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-2",
+      name: "Council Leader 2",
+      role: "Council Member",
+      category: "council",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-3",
+      name: "Council Leader 3",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-4",
+      name: "Council Leader 4",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-5",
+      name: "Council Leader 5",
+      role: "Council Member",
+      category: "council",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-6",
+      name: "Council Leader 6",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-7",
+      name: "Council Leader 7",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-8",
+      name: "Council Leader 8",
+      role: "Council Member",
+      category: "council",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-9",
+      name: "Council Leader 9",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-10",
+      name: "Council Leader 10",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-11",
+      name: "Council Leader 11",
+      role: "Council Member",
+      category: "council",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-12",
+      name: "Council Leader 12",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-13",
+      name: "Council Leader 13",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-14",
+      name: "Council Leader 14",
+      role: "Council Member",
+      category: "council",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-15",
+      name: "Council Leader 15",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-16",
+      name: "Council Leader 16",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-17",
+      name: "Council Leader 17",
+      role: "Council Member",
+      category: "council",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-18",
+      name: "Council Leader 18",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "council-19",
+      name: "Council Leader 19",
+      role: "Council Member",
+      category: "council",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "exec-1",
+      name: "Executive Member 1",
+      role: "Executive",
+      category: "executive",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "exec-2",
+      name: "Executive Member 2",
+      role: "Executive",
+      category: "executive",
+      image: "/bible-1.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "exec-3",
+      name: "Executive Member 3",
+      role: "Executive",
+      category: "executive",
+      image: "/bible-2.jpg",
+      email: "",
+      phone: "",
+    },
+    {
+      _id: "exec-4",
+      name: "Executive Member 4",
+      role: "Executive",
+      category: "executive",
+      image: "/bib-4.jpg",
+      email: "",
+      phone: "",
     },
   ];
 
@@ -141,6 +346,12 @@ export default function AboutPage() {
     { id: "history", label: "Our History" },
     { id: "journey", label: "Our Journey" },
     { id: "leadership", label: "Leadership" },
+  ];
+
+  const leadershipTabs = [
+    { id: "board", label: "Board of Directors (5)" },
+    { id: "executive", label: "Executive (4)" },
+    { id: "council", label: "Council Leaders (19)" },
   ];
 
   return (
@@ -464,8 +675,26 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                {leadership.map((leader) => (
+              <div className="mb-8 flex flex-wrap gap-3 justify-center">
+                {leadershipTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setLeadershipCategory(tab.id)}
+                    className={`px-6 py-2 rounded-full font-aeonik font-semibold transition-colors ${
+                      leadershipCategory === tab.id
+                        ? "bg-[#48007e] text-white"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {leadership
+                  .filter((leader) => leader.category === leadershipCategory)
+                  .map((leader) => (
                   <div
                     key={leader._id}
                     className="text-center"

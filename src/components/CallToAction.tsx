@@ -85,9 +85,11 @@ const CallToAction: React.FC = () => {
                   <div key={index} className="border-l-3 border-[#7c01cd] pl-3">
                     <p className="font-aeonik font-semibold text-gray-800">{meeting.day}</p>
                     <p className="font-aeonik text-gray-600 text-sm">{meeting.time}</p>
-                    <p className="font-aeonik text-gray-500 text-xs flex items-center gap-1">
-                      <MapPin className="w-3 h-3" /> {meeting.location}
-                    </p>
+                    {meeting.service && (
+                      <p className="font-aeonik font-semibold text-gray-700 text-sm flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> {meeting.service}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Calendar, User, Play } from "lucide-react";
 import Footer from "@/components/Footer";
 import { dummySermons } from "@/lib/dummyData";
@@ -15,6 +16,7 @@ interface Sermon {
   series?: string;
   excerpt: string;
   videoUrl: string;
+  thumbnail?: string;
   slug: {
     current: string;
   };
@@ -158,9 +160,15 @@ export default function SermonsPage() {
                 className="group bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col"
               >
                 {/* Video Thumbnail */}
-                <div className="relative h-40 sm:h-48 bg-gradient-to-br from-[#48007e]/30 to-[#7c01cd]/30 flex items-center justify-center overflow-hidden group-hover:bg-gradient-to-br group-hover:from-[#48007e]/50 group-hover:to-[#7c01cd]/50 transition-all">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-[#48007e] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="relative h-40 sm:h-48 bg-gradient-to-br from-[#48007e]/30 to-[#7c01cd]/30 flex items-center justify-center overflow-hidden group-hover:brightness-110 transition-all">
+                  <Image
+                    src={sermon.thumbnail || "/bib-4.jpg"}
+                    alt={sermon.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-all">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-[#48007e] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                       <Play className="w-5 sm:w-6 h-5 sm:h-6 text-white fill-white" />
                     </div>
                   </div>

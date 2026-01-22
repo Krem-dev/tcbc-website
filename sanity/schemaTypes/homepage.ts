@@ -111,6 +111,19 @@ export default defineType({
           rows: 2,
         },
         {
+          name: "featuredEvents",
+          title: "Featured Events (Select from existing events)",
+          type: "array",
+          of: [
+            {
+              type: "reference",
+              to: [{ type: "event" }],
+            },
+          ],
+          validation: (Rule) => Rule.max(6),
+          description: "Select up to 6 events to display on the homepage. They will show with their images and details.",
+        },
+        {
           name: "customEvents",
           title: "Custom Event Cards with Posters",
           type: "array",

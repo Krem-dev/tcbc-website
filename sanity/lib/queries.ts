@@ -47,6 +47,13 @@ export const SERMONS_QUERY = `
     excerpt,
     series,
     videoUrl,
+    thumbnail {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    },
     date,
     description
   }
@@ -61,6 +68,13 @@ export const SERMON_BY_SLUG_QUERY = `
     excerpt,
     series,
     videoUrl,
+    thumbnail {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    },
     date,
     description
   }
