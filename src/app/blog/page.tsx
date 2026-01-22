@@ -121,14 +121,12 @@ export default function BlogPage() {
               >
                 {/* Article Image Card */}
                 <figure className="relative h-48 sm:h-64 overflow-hidden rounded-lg sm:rounded-xl shadow-lg mb-4 sm:mb-6 group">
-                  <div 
-                    className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                    style={{
-                      backgroundImage: `url('${article.image?.asset?.url || "/bib-4.jpg"}')`
-                    }}
-                  >
-                    <div className="w-full h-full bg-gradient-to-br from-[#48007e]/40 to-[#7c01cd]/40" />
-                  </div>
+                  <Image
+                    src={article.image?.asset?.url || "/bib-4.jpg"}
+                    alt={article.title}
+                    fill
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                   <div
                     className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     aria-hidden="true"
