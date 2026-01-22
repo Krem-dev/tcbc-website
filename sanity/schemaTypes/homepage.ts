@@ -201,6 +201,38 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "worshipVideoSection",
+      title: "Experience Worship Together Section",
+      type: "object",
+      fields: [
+        {
+          name: "heading",
+          title: "Section Heading",
+          type: "string",
+          initialValue: "Experience Worship Together",
+        },
+        {
+          name: "description",
+          title: "Section Description",
+          type: "text",
+          rows: 2,
+          initialValue: "Join us for powerful worship services, inspiring messages, and authentic community.",
+        },
+        {
+          name: "videoUrl",
+          title: "Video URL",
+          type: "string",
+          description: "Enter the full URL to the worship video (e.g., https://example.com/video.mp4)",
+        },
+        {
+          name: "videoPoster",
+          title: "Video Poster/Thumbnail",
+          type: "image",
+          description: "Thumbnail image shown before video plays",
+        },
+      ],
+    }),
+    defineField({
       name: "recentSermons",
       title: "Recent Sermons Section",
       type: "object",

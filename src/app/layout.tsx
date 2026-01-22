@@ -26,6 +26,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <script
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSGemt2rRIqWi8PVV1IOypxLNF8uVtLJY"
+          async
+          defer
+        ></script>
+      </head>
       <body className={`${inter.variable} font-aeonik antialiased`}>
         <NavBar />
         <div className="pt-16">{children}</div>

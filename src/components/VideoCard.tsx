@@ -16,8 +16,28 @@ function VideoCard() {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [hasPlayed, setHasPlayed] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [videoData, setVideoData] = React.useState<any>(null);
 
   const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchVideoData = async () => {
+      try {
+        const response = await fetch("/api/homepage");
+        if (response.ok) {
+          const data = await response.json();
+          if (data?.worshipVideoSection) {
+            setVideoData(data.worshipVideoSection);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch video data:", error);
+      }
+    };
+
+    fetchVideoData();
+  }, []);
+
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(max-width: 640px)");
@@ -90,11 +110,18 @@ function VideoCard() {
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl">
-            Experience Worship <span className="text-[#7c01cd]">Together</span>
+            {videoData?.heading ? (
+              <>
+                {videoData.heading.split(" ").slice(0, -1).join(" ")} <span className="text-[#7c01cd]">{videoData.heading.split(" ").pop()}</span>
+              </>
+            ) : (
+              <>
+                Experience Worship <span className="text-[#7c01cd]">Together</span>
+              </>
+            )}
           </h2>
           <p className="text-[15px] sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed px-1">
-            Join us for powerful worship services, inspiring messages, and authentic community. 
-            Whether in-person or online, experience the presence of God with us every Sunday.
+            {videoData?.description || "Join us for powerful worship services, inspiring messages, and authentic community. Whether in-person or online, experience the presence of God with us every Sunday."}
           </p>
         </div>
 
@@ -135,7 +162,7 @@ function VideoCard() {
                 playsInline
                 muted
                 preload={isMobile ? "none" : "metadata"}
-                poster="/video-theumbnail.jpg"
+                poster={videoData?.videoPoster?.asset?.url || "/video-theumbnail.jpg"}
                 controls={showControls || hasPlayed}
                 onLoadedMetadata={() => setLoading(false)}
                 onLoadedData={() => setLoading(false)}
@@ -156,7 +183,7 @@ function VideoCard() {
                 onClick={() => playVideo()}
                 aria-label="TCBC worship experience video"
               >
-                <source src="/videos/chag.mp4" type="video/mp4" />
+                <source src={videoData?.videoUrl || "/videos/chag.mp4"} type="video/mp4" />
               </video>
 
               {loading && !error && (

@@ -95,6 +95,18 @@ export async function GET() {
             leader
           }
         },
+        worshipVideoSection {
+          heading,
+          description,
+          videoUrl,
+          videoPoster {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          }
+        },
         recentSermons {
           heading,
           description,

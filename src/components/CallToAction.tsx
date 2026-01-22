@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Clock } from "lucide-react";
+import ChurchMap from "./ChurchMap";
 
 const CallToAction: React.FC = () => {
   const [serviceTimes, setServiceTimes] = useState<any[]>([]);
@@ -124,17 +125,9 @@ const CallToAction: React.FC = () => {
             </div>
           </div>
 
-          {/* Google Map Embed */}
-          <div className="mt-8 rounded-lg overflow-hidden border border-gray-200 h-80">
-            <iframe
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              allowFullScreen={true}
-              referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2800.8474520347266!2d-75.68954!3d45.42001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cce0718cc4ccccd%3A0x123456789!2sThe%20Chosen%20Bible%20Church!5e0!3m2!1sen!2sca!4v1234567890"
-            />
+          {/* Church Location Map */}
+          <div className="mt-8">
+            <ChurchMap />
           </div>
         </div>
       </div>
