@@ -24,14 +24,18 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSGemt2rRIqWi8PVV1IOypxLNF8uVtLJY"
-          async
-          defer
-        ></script>
+        {mapsApiKey && (
+          <script
+            src={`https://maps.googleapis.com/maps/api/js?key=${mapsApiKey}`}
+            async
+            defer
+          ></script>
+        )}
       </head>
       <body className={`${inter.variable} font-aeonik antialiased`}>
         <NavBar />
