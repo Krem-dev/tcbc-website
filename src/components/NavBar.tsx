@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Search } from "lucide-react";
 import MembershipModal from "./MembershipModal";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,11 +12,12 @@ type NavItem = { href: string; label: string };
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [logoError, setLogoError] = useState(false);
   const [membershipModalOpen, setMembershipModalOpen] = useState(false);
   const [prayerRequestModalOpen, setPrayerRequestModalOpen] = useState(false);
   const [giveModalOpen, setGiveModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [prayerFormData, setPrayerFormData] = useState({
     name: "",
     email: "",
@@ -37,24 +38,8 @@ const NavBar = () => {
   const lastScrollY = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleScroll = () => {
-    const current = window.scrollY;
-    if (current > lastScrollY.current && current > 100) {
-      setHidden(true);
-    } else {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => setHidden(false), 0);
-    }
-    lastScrollY.current = current;
-  };
-
   useEffect(() => {
     if (typeof window === "undefined") return;
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
   }, []);
 
   useEffect(() => {
@@ -73,7 +58,7 @@ const NavBar = () => {
   }, []);
 
   const navItems: NavItem[] = [
-    { href: "/about", label: "About" },
+    { href: "/about", label: "About Us" },
     { href: "/ministry", label: "Ministry" },
     { href: "/contact", label: "Contact Us" },
   ];
@@ -116,6 +101,37 @@ const NavBar = () => {
     modalSetter(true);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const searchablePages = [
+      { label: "Home", href: "/", keywords: ["home", "main", "welcome"] },
+      { label: "About Us", href: "/about", keywords: ["about", "us", "church", "mission", "vision"] },
+      { label: "Ministry", href: "/ministry", keywords: ["ministry", "ministries", "programs", "services"] },
+      { label: "Contact Us", href: "/contact", keywords: ["contact", "reach", "email", "phone", "address"] },
+      { label: "Sermons", href: "/sermons", keywords: ["sermon", "sermons", "messages", "teachings", "word"] },
+      { label: "Blog", href: "/blog", keywords: ["blog", "articles", "news", "posts", "stories"] },
+      { label: "Events", href: "/events", keywords: ["events", "schedule", "calendar", "activities"] },
+      { label: "Membership", href: "/membership", keywords: ["membership", "join", "member", "register"] },
+      { label: "Leadership", href: "/leadership", keywords: ["leadership", "leaders", "team", "staff", "pastor"] },
+    ];
+
+    const results = searchablePages.filter((page) => {
+      const queryLower = query.toLowerCase();
+      return (
+        page.label.toLowerCase().includes(queryLower) ||
+        page.keywords.some((keyword) => keyword.includes(queryLower))
+      );
+    });
+
+    setSearchResults(results);
+  };
+
   const handlePrayerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -153,9 +169,7 @@ const NavBar = () => {
 
   return (
     <header
-      className={`bg-white/90 backdrop-blur-md shadow-lg fixed top-0 inset-x-0 z-50 border-b border-white/20 transition-transform duration-500 ${
-        hidden ? "-translate-y-full" : "translate-y-0"
-      }`}
+      className="bg-white/90 backdrop-blur-md shadow-lg fixed top-0 inset-x-0 z-50 border-b border-white/20"
     >
       <div className="max-w-none mx-auto flex items-center justify-between px-6 sm:px-6 lg:px-8 py-3">
         <div className="flex items-center">
@@ -202,12 +216,12 @@ const NavBar = () => {
           </Link>
         </div>
 
-        <nav className="hidden lg:block" aria-label="Main navigation">
+        <nav className="hidden lg:block flex-1 px-6" aria-label="Main navigation">
           <ul className="flex items-center space-x-6 xl:space-x-8">
             {navItems
               .filter((item) => item.label !== "Sermons")
               .map((item) => {
-                if (item.label === "About") {
+                if (item.label === "About Us") {
                   return (
                     <React.Fragment key={item.href}>
                       <li>
@@ -313,6 +327,34 @@ const NavBar = () => {
               })}
           </ul>
         </nav>
+
+        <div className="hidden lg:flex items-center gap-2 mr-6 relative group">
+          <input
+            type="text"
+            placeholder="Search pages..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="bg-transparent outline-none text-sm text-gray-700 placeholder-gray-500 w-40 border-b-2 border-gray-300 pb-1.5 focus:border-[#48007e] transition-colors"
+          />
+          <Search className="w-4 h-4 text-gray-400 -ml-6" />
+          {searchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-max">
+              {searchResults.map((result) => (
+                <Link
+                  key={result.href}
+                  href={result.href}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSearchResults([]);
+                  }}
+                  className="block px-4 py-3 hover:bg-[#48007e]/5 text-sm text-gray-700 border-b last:border-b-0 transition-colors"
+                >
+                  {result.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="hidden lg:flex items-center gap-3">
           <button
