@@ -1,5 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
+import { createClient } from "next-sanity";
+
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const token = process.env.SANITY_API_TOKEN;
+
+const sanityClient =
+  projectId && dataset && token
+    ? createClient({
+        projectId,
+        dataset,
+        apiVersion: "2024-01-01",
+        token,
+        useCdn: false,
+      })
+    : null;
 
 interface MembershipFormData {
   firstName: string;
@@ -170,8 +186,48 @@ export async function POST(request: NextRequest) {
   try {
     const formData: MembershipFormData = await request.json();
 
-    const pdfBuffer = generatePDF(formData);
+    // Save to Sanity CMS
+    if (sanityClient) {
+      try {
+        await sanityClient.create({
+          _type: "membership",
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          preferredName: formData.preferredName,
+          dateOfBirth: formData.dateOfBirth,
+          gender: formData.gender,
+          maritalStatus: formData.maritalStatus,
+          phoneNumber: formData.phoneNumber,
+          email: formData.email,
+          homeAddress: formData.homeAddress,
+          memberSince: formData.memberSince,
+          heardAbout: formData.heardAbout,
+          acceptedJesus: formData.acceptedJesus,
+          baptizedWater: formData.baptizedWater,
+          baptizedWaterYear: formData.baptizedWaterYear,
+          willingBaptism: formData.willingBaptism,
+          baptizedHolySpirit: formData.baptizedHolySpirit,
+          baptizedHolySpiritYear: formData.baptizedHolySpiritYear,
+          willingHolySpirit: formData.willingHolySpirit,
+          previousChurch: formData.previousChurch,
+          ministryInterests: formData.ministryInterests,
+          willingServe: formData.willingServe,
+          willingPrayers: formData.willingPrayers,
+          willingTithes: formData.willingTithes,
+          agreeTeachings: formData.agreeTeachings,
+          understandMembership: formData.understandMembership,
+          declarationAccepted: formData.declarationAccepted,
+          signature: formData.signature,
+          submittedAt: new Date().toISOString(),
+          status: "new",
+        });
+      } catch (err) {
+        console.error("Failed to save membership to Sanity:", err);
+      }
+    }
 
+    // Generate and return PDF
+    const pdfBuffer = generatePDF(formData);
     const filename = `TCBC_Membership_${formData.firstName}_${formData.lastName}_${Date.now()}.pdf`;
 
     return new NextResponse(Buffer.from(pdfBuffer), {

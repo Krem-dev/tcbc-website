@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { X, MapPin, Calendar, Clock, Tag } from "lucide-react";
+import { X, MapPin, Calendar, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type EventData = {
@@ -102,14 +102,18 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
             className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
           >
             {/* Event Image */}
-            <div className="relative w-full h-56 sm:h-72 shrink-0 overflow-hidden rounded-t-3xl">
-              <Image
-                src={imageUrl}
-                alt={event.image?.alt || event.title}
-                fill
-                className="object-cover object-top"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="relative w-full shrink-0 overflow-hidden rounded-t-3xl bg-gray-900">
+              <div className="relative w-full" style={{ maxHeight: '60vh' }}>
+                <Image
+                  src={imageUrl}
+                  alt={event.image?.alt || event.title}
+                  width={800}
+                  height={600}
+                  className="w-full h-auto object-contain"
+                  style={{ maxHeight: '60vh' }}
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
               {/* Close button */}
               <button
@@ -137,79 +141,37 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
             {/* Content */}
             <div className="p-6 overflow-y-auto">
-              {/* Info Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              {/* Event Details */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 mb-5">
                 {hasDateInfo && (
-                  <div className="flex items-start gap-3 bg-[#48007e]/5 rounded-xl p-4">
-                    <Calendar className="w-5 h-5 text-[#48007e] mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-xs font-semibold text-[#48007e] uppercase tracking-wide mb-1">
-                        Date
-                      </p>
-                      <p className="text-sm text-gray-800">
-                        {formatDate(event.startDate!)}
-                      </p>
-                      {hasEndDate && !isSameDay && (
-                        <p className="text-sm text-gray-600">
-                          to {formatDate(event.endDate!)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-[#48007e]" />
+                    {formatDate(event.startDate!)}
+                    {hasEndDate && !isSameDay && (
+                      <> &ndash; {formatDate(event.endDate!)}</>
+                    )}
+                  </span>
                 )}
-
                 {hasDateInfo && (
-                  <div className="flex items-start gap-3 bg-[#48007e]/5 rounded-xl p-4">
-                    <Clock className="w-5 h-5 text-[#48007e] mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-xs font-semibold text-[#48007e] uppercase tracking-wide mb-1">
-                        Time
-                      </p>
-                      <p className="text-sm text-gray-800">
-                        {formatTime(event.startDate!)}
-                        {hasEndDate && ` – ${formatTime(event.endDate!)}`}
-                      </p>
-                    </div>
-                  </div>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-[#48007e]" />
+                    {formatTime(event.startDate!)}
+                    {hasEndDate && ` – ${formatTime(event.endDate!)}`}
+                  </span>
                 )}
-
                 {event.location && (
-                  <div className="flex items-start gap-3 bg-[#48007e]/5 rounded-xl p-4">
-                    <MapPin className="w-5 h-5 text-[#48007e] mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-xs font-semibold text-[#48007e] uppercase tracking-wide mb-1">
-                        Venue
-                      </p>
-                      <p className="text-sm text-gray-800">{event.location}</p>
-                    </div>
-                  </div>
-                )}
-
-                {event.category && (
-                  <div className="flex items-start gap-3 bg-[#48007e]/5 rounded-xl p-4">
-                    <Tag className="w-5 h-5 text-[#48007e] mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-xs font-semibold text-[#48007e] uppercase tracking-wide mb-1">
-                        Category
-                      </p>
-                      <p className="text-sm text-gray-800">
-                        {getCategoryLabel(event.category)}
-                      </p>
-                    </div>
-                  </div>
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-[#48007e]" />
+                    {event.location}
+                  </span>
                 )}
               </div>
 
               {/* Description */}
               {event.description && (
-                <div>
-                  <h3 className="text-sm font-semibold text-[#48007e] uppercase tracking-wide mb-3">
-                    About This Event
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                    {event.description}
-                  </p>
-                </div>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                  {event.description}
+                </p>
               )}
             </div>
           </motion.div>

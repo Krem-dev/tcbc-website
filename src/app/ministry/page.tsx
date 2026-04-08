@@ -256,16 +256,6 @@ export default function MinistryPage() {
       {/* Ministries Section */}
       <section className="bg-gray-50 py-12 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Heading */}
-          <div className="mb-8 sm:mb-16 text-center">
-            <h2 className="font-satoshi text-2xl sm:text-3xl md:text-4xl font-bold text-[#48007e] mb-2 sm:mb-4">
-              Get Involved
-            </h2>
-            <p className="font-aeonik text-sm sm:text-base md:text-lg text-gray-600">
-              Explore our ministries and find where you can serve and grow in your faith journey.
-            </p>
-          </div>
-
           {/* Ministry Grid - Horizontal Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {displayMinistries.map((ministry) => {

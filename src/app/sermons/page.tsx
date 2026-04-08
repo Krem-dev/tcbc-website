@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, User, Play } from "lucide-react";
+import { Play, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { dummySermons } from "@/lib/dummyData";
-import { USE_DUMMY_DATA } from "@/lib/config";
 
 interface Sermon {
   _id: string;
@@ -46,6 +44,10 @@ export default function SermonsPage() {
   const [allowMotion, setAllowMotion] = useState(true);
   const [sermons, setSermons] = useState<Sermon[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [seriesFilter, setSeriesFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PER_PAGE = 9;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -73,70 +75,46 @@ export default function SermonsPage() {
     fetchSermons();
   }, []);
 
-  const fallbackSermons: Sermon[] = [
-    {
-      _id: "1",
-      title: "The Foundation of Faith",
-      speaker: "Pastor John",
-      date: "2026-01-05",
-      series: "Foundations",
-      excerpt: "Discover what it means to build your life on the solid foundation of faith in Jesus Christ.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      slug: { current: "foundation-of-faith" },
-    },
-    {
-      _id: "2",
-      title: "Living in Victory",
-      speaker: "Pastor Sarah",
-      date: "2025-12-29",
-      series: "Victory in Christ",
-      excerpt: "Learn how to live victoriously through Christ in every circumstance of life.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      slug: { current: "living-in-victory" },
-    },
-    {
-      _id: "3",
-      title: "The Power of Prayer",
-      speaker: "Pastor Michael",
-      date: "2025-12-22",
-      series: "Prayer",
-      excerpt: "Unlock the transformative power of prayer and see God work in your life.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      slug: { current: "power-of-prayer" },
-    },
-    {
-      _id: "4",
-      title: "Grace Undeserved",
-      speaker: "Pastor John",
-      date: "2025-12-15",
-      series: "Grace",
-      excerpt: "Understand the amazing grace of God and how it transforms our lives.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      slug: { current: "grace-undeserved" },
-    },
-    {
-      _id: "5",
-      title: "Walking in the Light",
-      speaker: "Pastor Sarah",
-      date: "2025-12-08",
-      series: "Light",
-      excerpt: "Discover how to walk in God's light and reflect His love to the world.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      slug: { current: "walking-in-light" },
-    },
-    {
-      _id: "6",
-      title: "Love Never Fails",
-      speaker: "Pastor Michael",
-      date: "2025-12-01",
-      series: "Love",
-      excerpt: "Explore the greatest commandment and how love is the foundation of all we do.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      slug: { current: "love-never-fails" },
-    },
-  ];
+  const displaySermons = sermons;
 
-  const displaySermons = sermons.length > 0 ? sermons : fallbackSermons;
+  const allSeries = useMemo(() => {
+    const names = displaySermons.map((s) => s.series).filter(Boolean) as string[];
+    return Array.from(new Set(names)).sort();
+  }, [displaySermons]);
+
+  const filteredSermons = useMemo(() => {
+    let result = displaySermons;
+    if (seriesFilter) {
+      result = result.filter((s) => s.series === seriesFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) ||
+          s.speaker.toLowerCase().includes(q) ||
+          (s.excerpt && s.excerpt.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [displaySermons, searchQuery, seriesFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredSermons.length / PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedSermons = filteredSermons.slice(
+    (safeCurrentPage - 1) * PER_PAGE,
+    safeCurrentPage * PER_PAGE
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleSeriesChange = (value: string) => {
+    setSeriesFilter(value);
+    setCurrentPage(1);
+  };
 
   return (
     <main className="min-h-screen bg-white overflow-hidden">
@@ -161,80 +139,114 @@ export default function SermonsPage() {
         </div>
       </section>
 
-      {/* Sermons Grid */}
-      <section className="py-12 sm:py-24 bg-white">
+      {/* Sermons */}
+      <section className="py-12 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8 sm:mb-12">
-            <h2 className="font-satoshi text-2xl sm:text-3xl font-bold text-[#48007e] mb-2 sm:mb-4">
-              All Sermons
-            </h2>
-            <p className="font-aeonik text-sm sm:text-base text-gray-600">
-              Explore our latest sermons and find messages that speak to your heart.
-            </p>
+          {/* Search & Filter Bar */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by title, speaker..."
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#48007e]/20 focus:border-[#48007e]/40 transition"
+              />
+            </div>
+            <select
+              value={seriesFilter}
+              onChange={(e) => handleSeriesChange(e.target.value)}
+              className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#48007e]/20 focus:border-[#48007e]/40 transition sm:w-52"
+            >
+              <option value="">All Series</option>
+              {allSeries.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {displaySermons.map((sermon) => (
-              <div
-                key={sermon._id}
-                className="group bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col"
-              >
-                {/* Video Thumbnail */}
-                <div className="relative h-40 sm:h-48 bg-gradient-to-br from-[#48007e]/30 to-[#7c01cd]/30 flex items-center justify-center overflow-hidden group-hover:brightness-110 transition-all">
-                  <img
-                    src={sermon.thumbnail?.asset?.url || (sermon.videoUrl ? getYouTubeThumbnail(sermon.videoUrl) : null) || "/bib-4.jpg"}
-                    alt={sermon.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-all">
-                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-[#48007e] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                      <Play className="w-5 sm:w-6 h-5 sm:h-6 text-white fill-white" />
+          {/* Results count */}
+          <p className="text-sm text-gray-400 mb-6">
+            {filteredSermons.length} sermon{filteredSermons.length !== 1 ? "s" : ""}
+            {searchQuery || seriesFilter ? " found" : ""}
+          </p>
+
+          {/* Sermon Cards */}
+          {loading ? (
+            <div className="text-center py-16">
+              <p className="text-gray-400">Loading sermons...</p>
+            </div>
+          ) : paginatedSermons.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500">No sermons match your search.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+              {paginatedSermons.map((sermon) => (
+                <a
+                  key={sermon._id}
+                  href={sermon.videoUrl?.replace('/embed/', '/watch?v=') || sermon.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group"
+                >
+                  {/* Thumbnail */}
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
+                    <img
+                      src={sermon.thumbnail?.asset?.url || (sermon.videoUrl ? getYouTubeThumbnail(sermon.videoUrl) : null) || "/bib-4.jpg"}
+                      alt={sermon.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                        <Play className="w-5 h-5 text-[#48007e] fill-[#48007e] ml-0.5" />
+                      </div>
                     </div>
+                    {sermon.series && (
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black/60 text-white text-[11px] font-medium rounded backdrop-blur-sm">
+                        {sermon.series}
+                      </span>
+                    )}
                   </div>
-                </div>
 
-                {/* Content */}
-                <div className="p-4 sm:p-6 flex-grow flex flex-col">
-                  {sermon.series && (
-                    <span className="inline-block w-fit px-2 sm:px-3 py-0.5 sm:py-1 bg-[#7c01cd]/15 text-[#48007e] text-xs font-semibold rounded-full mb-2 sm:mb-3">
-                      {sermon.series}
-                    </span>
-                  )}
-
-                  <h3 className="font-satoshi text-base sm:text-lg font-bold text-[#48007e] group-hover:text-[#7c01cd] transition-colors mb-2 sm:mb-3">
+                  {/* Info */}
+                  <h3 className="font-satoshi text-[15px] font-semibold text-gray-900 group-hover:text-[#48007e] transition-colors line-clamp-2 leading-snug mb-1.5">
                     {sermon.title}
                   </h3>
-
-                  <p className="font-aeonik text-gray-600 text-xs sm:text-sm flex-grow mb-3 sm:mb-4">
-                    {sermon.excerpt}
+                  <p className="text-xs text-gray-400">
+                    {sermon.speaker} &middot; {new Date(sermon.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
+                </a>
+              ))}
+            </div>
+          )}
 
-                  {/* Metadata */}
-                  <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-600 font-aeonik border-t border-gray-200 pt-3 sm:pt-4">
-                    <div className="flex items-center gap-2">
-                      <User className="w-3 sm:w-4 h-3 sm:h-4 text-[#48007e]" />
-                      <span>{sermon.speaker}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-3 sm:w-4 h-3 sm:h-4 text-[#48007e]" />
-                      <span>{new Date(sermon.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-
-                  {/* Watch Button */}
-                  <a
-                    href={sermon.videoUrl?.replace('/embed/', '/watch?v=') || sermon.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 sm:mt-4 w-full py-2 bg-[#48007e] text-white font-semibold text-sm rounded-lg hover:bg-[#7c01cd] transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Play className="w-3 sm:w-4 h-3 sm:h-4 fill-white" />
-                    Watch Sermon
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-10">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={safeCurrentPage === 1}
+                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </button>
+              <span className="text-sm text-gray-500">
+                Page {safeCurrentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={safeCurrentPage === totalPages}
+                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

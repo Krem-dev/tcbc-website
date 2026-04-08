@@ -5,5 +5,7 @@ import prayerRequest from "./prayerRequest";
 import sermon from "./sermon";
 import organization from "./organization";
 import homepage from "./homepage";
+import membership from "./membership";
+import contactSubmission from "./contactSubmission";
 
-export const schemaTypes = [blog, event, ministry, prayerRequest, sermon, organization, homepage];
+export const schemaTypes = [blog, event, ministry, prayerRequest, sermon, organization, homepage, membership, contactSubmission];

@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, User, Search } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { dummyBlogs } from "@/lib/dummyData";
-import { USE_DUMMY_DATA } from "@/lib/config";
 
 interface BlogArticle {
   _id: string;
@@ -25,19 +23,14 @@ interface BlogArticle {
   };
 }
 
+const PER_PAGE = 9;
+
 export default function BlogPage() {
   const [articles, setArticles] = useState<BlogArticle[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [allowMotion, setAllowMotion] = useState(true);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setAllowMotion(!mq.matches);
-    update();
-    mq.addEventListener?.("change", update);
-    return () => mq.removeEventListener?.("change", update);
-  }, []);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -57,21 +50,53 @@ export default function BlogPage() {
     fetchBlogs();
   }, []);
 
-  const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.author.toLowerCase().includes(searchQuery.toLowerCase())
+  const allCategories = useMemo(() => {
+    const cats = articles.map((a) => a.category).filter(Boolean);
+    return Array.from(new Set(cats)).sort();
+  }, [articles]);
+
+  const filteredArticles = useMemo(() => {
+    let result = articles;
+    if (categoryFilter) {
+      result = result.filter((a) => a.category === categoryFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (a) =>
+          a.title.toLowerCase().includes(q) ||
+          a.excerpt?.toLowerCase().includes(q) ||
+          a.author.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [articles, searchQuery, categoryFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredArticles.length / PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedArticles = filteredArticles.slice(
+    (safeCurrentPage - 1) * PER_PAGE,
+    safeCurrentPage * PER_PAGE
   );
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setCategoryFilter(value);
+    setCurrentPage(1);
+  };
 
   return (
     <main className="min-h-screen bg-white overflow-hidden">
-      {/* Hero Section with Image Background */}
+      {/* Hero Section */}
       <section
         className="relative py-24 sm:py-32 bg-center bg-cover opacity-0 animate-fade-in overflow-hidden"
         style={{ backgroundImage: "url('/bib-4.jpg')" }}
         aria-label="Blog hero"
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#48007e]/85 via-[#48007e]/70 to-[#7c01cd]/75" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
@@ -87,101 +112,110 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Search Section */}
-      <section className="bg-white py-8 sm:py-12 border-b border-gray-100">
+      {/* Blog Content */}
+      <section className="py-12 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-[#48007e] w-4 sm:w-5 h-4 sm:h-5" />
+          {/* Search & Filter Bar */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search articles..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-0 focus:border-[#48007e] font-aeonik text-sm sm:text-base text-gray-800 placeholder-gray-400 transition-colors duration-300"
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#48007e]/20 focus:border-[#48007e]/40 transition"
               />
             </div>
-            {searchQuery && (
-              <p className="mt-3 text-sm text-gray-600 font-aeonik">
-                Found {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'}
-              </p>
+            {allCategories.length > 1 && (
+              <select
+                value={categoryFilter}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+                className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#48007e]/20 focus:border-[#48007e]/40 transition sm:w-52"
+              >
+                <option value="">All Categories</option>
+                {allCategories.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             )}
           </div>
-        </div>
-      </section>
 
-      {/* Articles Grid - StoriesSection Style */}
-      <section className="py-12 sm:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {filteredArticles.map((article) => (
-              <article
-                key={article._id}
-                className="group cursor-pointer"
-              >
-                {/* Article Image Card */}
-                <figure className="relative h-48 sm:h-64 overflow-hidden rounded-lg sm:rounded-xl shadow-lg mb-4 sm:mb-6 group">
-                  <Image
-                    src={article.image?.asset?.url || "/bib-4.jpg"}
-                    alt={article.title}
-                    fill
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    aria-hidden="true"
-                  />
-                </figure>
+          {/* Results count */}
+          <p className="text-sm text-gray-400 mb-6">
+            {filteredArticles.length} article{filteredArticles.length !== 1 ? "s" : ""}
+            {searchQuery || categoryFilter ? " found" : ""}
+          </p>
 
-                {/* Article Content */}
-                <div>
-                  {/* Category Badge */}
-                  <div className="mb-2 sm:mb-3">
-                    <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 bg-[#7c01cd]/15 text-[#48007e] text-xs font-semibold rounded-full">
-                      {article.category}
-                    </span>
+          {/* Articles Grid */}
+          {loading ? (
+            <div className="text-center py-16">
+              <p className="text-gray-400">Loading articles...</p>
+            </div>
+          ) : paginatedArticles.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500">No articles match your search.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+              {paginatedArticles.map((article) => (
+                <Link
+                  key={article._id}
+                  href={`/blog/${article.slug.current}`}
+                  className="group"
+                >
+                  {/* Image */}
+                  <div className="relative aspect-[3/2] rounded-xl overflow-hidden bg-gray-100 mb-3">
+                    <Image
+                      src={article.image?.asset?.url || "/bib-4.jpg"}
+                      alt={article.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {article.category && (
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black/60 text-white text-[11px] font-medium rounded backdrop-blur-sm">
+                        {article.category}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Title */}
-                  <h3 className="font-satoshi text-lg sm:text-xl font-bold text-[#48007e] mb-2 sm:mb-3 group-hover:text-[#7c01cd] transition-colors line-clamp-2">
+                  {/* Content */}
+                  <h3 className="font-satoshi text-[15px] font-semibold text-gray-900 group-hover:text-[#48007e] transition-colors line-clamp-2 leading-snug mb-1.5">
                     {article.title}
                   </h3>
-
-                  {/* Excerpt */}
-                  <p className="font-aeonik text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
+                  <p className="text-xs text-gray-500 line-clamp-2 mb-2">
                     {article.excerpt}
                   </p>
+                  <p className="text-xs text-gray-400">
+                    {article.author} &middot; {new Date(article.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
 
-                  {/* Meta Information */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-gray-500 font-aeonik">
-                    <div className="flex items-center gap-1">
-                      <User className="w-4 h-4" />
-                      <span>{article.author}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-
-                  {/* Read More Link */}
-                  <Link
-                    href={`/blog/${article.slug.current}`}
-                    className="inline-block mt-4 text-[#48007e] font-semibold hover:text-[#7c01cd] transition-colors group/link"
-                  >
-                    Read Article →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* No Articles Message */}
-          {filteredArticles.length === 0 && (
-            <div className="text-center py-12">
-              <p className="font-aeonik text-gray-600 text-lg">
-                No articles found in this category.
-              </p>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-12">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={safeCurrentPage === 1}
+                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </button>
+              <span className="text-sm text-gray-500">
+                Page {safeCurrentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={safeCurrentPage === totalPages}
+                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>

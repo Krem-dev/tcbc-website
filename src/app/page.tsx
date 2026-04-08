@@ -187,32 +187,36 @@ export default function HomePage() {
       {/* Pastor Welcome Section */}
       <section className="py-16 bg-gradient-to-r from-[#48007e]/5 to-transparent border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 items-center">
-            {/* Image - Circle Design */}
-            <div className="flex justify-center lg:justify-start">
-              <div className="relative w-80 h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
-                <Image
-                  src={homepageContent?.pastorWelcome?.pastorImage?.asset?.url || "/bib-4.jpg"}
-                  alt={homepageContent?.pastorWelcome?.pastorName || "Pastor John Smith"}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+          {loading ? (
+            <div className="flex justify-center py-16">
+              <div className="w-8 h-8 border-2 border-[#48007e]/20 border-t-[#48007e] rounded-full animate-spin" />
             </div>
+          ) : homepageContent?.pastorWelcome ? (
+            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 items-center">
+              {/* Image - Circle Design */}
+              <div className="flex justify-center lg:justify-start">
+                <div className="relative w-80 h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
+                  <Image
+                    src={homepageContent.pastorWelcome.pastorImage?.asset?.url || "/bib-4.jpg"}
+                    alt={homepageContent.pastorWelcome.pastorName || "Pastor"}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
 
-            {/* Content */}
-            <div className="flex flex-col justify-center">
-              <p className="font-aeonik text-xs font-bold uppercase tracking-widest text-[#7c01cd] mb-3">
-                {homepageContent?.pastorWelcome?.heading || "Welcome From Our Pastor"}
-              </p>
+              {/* Content */}
+              <div className="flex flex-col justify-center">
+                <p className="font-aeonik text-xs font-bold uppercase tracking-widest text-[#7c01cd] mb-3">
+                  {homepageContent.pastorWelcome.heading || "Welcome From Our Pastor"}
+                </p>
 
-              <h3 className="font-satoshi text-3xl font-bold text-[#48007e] mb-4">
-                {homepageContent?.pastorWelcome?.pastorName || "Pastor John Smith"}
-              </h3>
+                <h3 className="font-satoshi text-3xl font-bold text-[#48007e] mb-4">
+                  {homepageContent.pastorWelcome.pastorName}
+                </h3>
 
-              <div className="font-aeonik text-base text-gray-700 leading-relaxed mb-6">
-                {homepageContent?.pastorWelcome?.welcomeMessage ? (
-                  homepageContent.pastorWelcome.welcomeMessage.map((block: any, idx: number) => (
+                <div className="font-aeonik text-base text-gray-700 leading-relaxed mb-6">
+                  {homepageContent.pastorWelcome.welcomeMessage?.map((block: any, idx: number) => (
                     <p key={idx} className="mb-4">
                       {block.children?.map((child: any, i: number) => (
                         <span key={i}>
@@ -224,22 +228,18 @@ export default function HomePage() {
                         </span>
                       ))}
                     </p>
-                  ))
-                ) : (
-                  <p>
-                    "Welcome to The Chosen Bible Church. We are a community of believers committed to experiencing God's transformative power. Whether you're visiting for the first time or part of our family, you are valued and loved. Join us in worship, fellowship, and service as we grow together in Christ."
-                  </p>
-                )}
-              </div>
+                  ))}
+                </div>
 
-              <Link
-                href="/about"
-                className="inline-block w-fit text-[#48007e] font-aeonik font-semibold hover:text-[#7c01cd] transition"
-              >
-                Learn More About Our Leadership →
-              </Link>
+                <Link
+                  href="/about"
+                  className="inline-block w-fit text-[#48007e] font-aeonik font-semibold hover:text-[#7c01cd] transition"
+                >
+                  Learn More About Our Leadership →
+                </Link>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </section>
 
@@ -266,7 +266,11 @@ export default function HomePage() {
               md:flex-wrap md:justify-center md:overflow-visible md:snap-none
             "
           >
-            {homepageContent?.upcomingEvents?.featuredEvents && homepageContent.upcomingEvents.featuredEvents.length > 0 ? (
+            {loading ? (
+              <div className="flex justify-center w-full py-12">
+                <div className="w-8 h-8 border-2 border-[#48007e]/20 border-t-[#48007e] rounded-full animate-spin" />
+              </div>
+            ) : homepageContent?.upcomingEvents?.featuredEvents?.length > 0 ? (
               homepageContent.upcomingEvents.featuredEvents.map((event: any) => (
                 <ExpandingCard
                   key={event._id}
@@ -277,26 +281,7 @@ export default function HomePage() {
                 />
               ))
             ) : (
-              <>
-                <ExpandingCard
-                  title="Dominion Service"
-                  description="Experience powerful worship at The Chosen Bible Church. Inspiring messages and meaningful fellowship as we walk in dominion."
-                  image="/service1.jpg"
-                  link="/events"
-                />
-                <ExpandingCard
-                  title="CrossOver Service"
-                  description="Join us for transformative worship and messages that help you cross over into your destiny at The Chosen Bible Church."
-                  image="/service2.jpg"
-                  link="/events"
-                />
-                <ExpandingCard
-                  title="A Night of Noel"
-                  description="Celebrate the season of joy and worship with The Chosen Bible Church as we gather for a night of Noel filled with music and fellowship."
-                  image="/service3.jpg"
-                  link="/events"
-                />
-              </>
+              <p className="text-center text-gray-500 w-full py-8">No upcoming events at this time.</p>
             )}
           </div>
         </div>

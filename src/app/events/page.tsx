@@ -5,8 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, MapPin, Clock, X } from "lucide-react";
 import Footer from "@/components/Footer";
 import ChurchCalendar from "@/components/ChurchCalendar";
-import { dummyEvents, dummyMinistries } from "@/lib/dummyData";
-import { USE_DUMMY_DATA } from "@/lib/config";
 
 interface SanityEvent {
   _id: string;

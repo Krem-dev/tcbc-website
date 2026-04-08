@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 import Footer from "@/components/Footer";
 
 interface FormData {
@@ -113,75 +114,32 @@ export default function MembershipPage() {
     setLoading(true);
 
     try {
-      const { jsPDF } = await import("jspdf");
-      const doc = new jsPDF();
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      let yPosition = 20;
-
-      doc.setFontSize(20);
-      doc.text("Membership Application Form", pageWidth / 2, yPosition, { align: "center" });
-      yPosition += 15;
-
-      doc.setFontSize(12);
-      const addField = (label: string, value: string) => {
-        doc.text(`${label}: ${value}`, 20, yPosition);
-        yPosition += 8;
-        if (yPosition > pageHeight - 20) {
-          doc.addPage();
-          yPosition = 20;
-        }
-      };
-
-      addField("First Name", formData.firstName);
-      addField("Last Name", formData.lastName);
-      addField("Preferred Name", formData.preferredName);
-      addField("Date of Birth", formData.dateOfBirth);
-      addField("Gender", formData.gender);
-      addField("Marital Status", formData.maritalStatus);
-      addField("Phone Number", formData.phoneNumber);
-      addField("Email Address", formData.email);
-      addField("Home Address", formData.homeAddress);
-      addField("Member Since", formData.memberSince);
-      addField("How did you hear about TCBC?", formData.heardAbout);
-      addField("Accepted Jesus Christ", formData.acceptedJesus === true ? "Yes" : formData.acceptedJesus === false ? "No" : "");
-      addField("Baptized in Water", formData.baptizedWater === true ? "Yes" : formData.baptizedWater === false ? "No" : "");
-      if (formData.baptizedWater) addField("Year of Baptism", formData.baptizedWaterYear);
-      else addField("Willing to be Baptized", formData.willingBaptism);
-      addField("Baptized in Holy Spirit", formData.baptizedHolySpirit === true ? "Yes" : formData.baptizedHolySpirit === false ? "No" : "");
-      if (formData.baptizedHolySpirit) addField("Year of Holy Spirit Baptism", formData.baptizedHolySpiritYear);
-      else addField("Willing to receive Holy Spirit Baptism", formData.willingHolySpirit);
-      addField("Previous Church", formData.previousChurch);
-      addField("Ministry Interests", formData.ministryInterests.join(", ") || "None");
-      if (formData.ministryOther) addField("Other Ministry", formData.ministryOther);
-      addField("Completed Membership Classes", formData.completedClasses === true ? "Yes" : formData.completedClasses === false ? "No" : "");
-      addField("Willing to Serve", formData.willingServe === true ? "Yes" : formData.willingServe === false ? "No" : "");
-      addField("Support with Prayers & Attendance", formData.willingPrayers === true ? "Yes" : formData.willingPrayers === false ? "No" : "");
-      addField("Support with Tithes & Offerings", formData.willingTithes === true ? "Yes" : formData.willingTithes === false ? "No" : "");
-      addField("Agree to Church Teachings", formData.agreeTeachings === true ? "Yes" : formData.agreeTeachings === false ? "No" : "");
-      addField("Understand Membership Terms", formData.understandMembership === true ? "Yes" : formData.understandMembership === false ? "No" : "");
-      addField("Declaration Accepted", formData.declarationAccepted ? "Yes" : "No");
-      addField("Signature", formData.signature);
-      addField("Date", formData.date);
-
-      const pdfBase64 = doc.output("dataurlstring").split(",")[1];
-
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-      const response = await fetch(`${backendUrl}/api/membership`, {
+      const response = await fetch("/api/membership", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ membershipData: formData, pdfBase64 }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
+        // Download the generated PDF
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `TCBC_Membership_${formData.firstName}_${formData.lastName}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
         setSubmitted(true);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        alert("Failed to submit form. Please try again.");
+        toast.error("Failed to submit form. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Error submitting form. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

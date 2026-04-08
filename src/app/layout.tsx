@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "@/lib/localStorage-polyfill";
 import NavBar from "@/components/NavBar";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.variable} font-aeonik antialiased`}>
         <NavBar />
+        <Toaster position="top-center" richColors closeButton />
         <div className="pt-16">{children}</div>
       </body>
     </html>

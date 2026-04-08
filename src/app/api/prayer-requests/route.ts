@@ -1,28 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "next-sanity";
 
-// Note: This uses environment variables for credentials
-// NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_TOKEN
-
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const token = process.env.SANITY_API_TOKEN;
 
-const client = projectId && dataset && token ? createClient({
-  projectId,
-  dataset,
-  apiVersion: "2024-01-01",
-  token,
-  useCdn: false,
-}) : null;
+const client =
+  projectId && dataset && token
+    ? createClient({
+        projectId,
+        dataset,
+        apiVersion: "2024-01-01",
+        token,
+        useCdn: false,
+      })
+    : null;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const {
+      name,
+      email,
+      phone,
+      category,
+      request: prayerRequest,
+      isConfidential,
+    } = body;
 
-    const { name, email, phone, category, request: prayerRequest, isConfidential } = body;
-
-    // Validate required fields
     if (!name || !email || !category || !prayerRequest) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -30,25 +35,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // If Sanity is not configured, just log the request
     if (!client) {
-      console.log("Prayer request received (Sanity not configured):", {
-        name,
-        email,
-        phone,
-        category,
-        prayerRequest,
-        isConfidential,
-        submittedAt: new Date().toISOString(),
-      });
+      console.warn("Sanity not configured — prayer request logged only.");
       return NextResponse.json(
-        { success: true, message: "Prayer request received. Sanity CMS not configured yet." },
+        { success: true, message: "Prayer request received" },
         { status: 201 }
       );
     }
 
-    // Create prayer request document in Sanity
-    const doc = {
+    await client.create({
       _type: "prayerRequest",
       name,
       email,
@@ -58,12 +53,12 @@ export async function POST(request: NextRequest) {
       isConfidential,
       status: "new",
       submittedAt: new Date().toISOString(),
-    };
+    });
 
-    const result = await client.create(doc);
+    // TODO: Add email notification when switching to Hostinger SMTP
 
     return NextResponse.json(
-      { success: true, id: result._id },
+      { success: true, message: "Prayer request submitted" },
       { status: 201 }
     );
   } catch (error) {
@@ -78,21 +73,13 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     if (!client) {
-      console.warn("Sanity client not configured. Returning empty prayer requests.");
       return NextResponse.json([]);
     }
 
     const prayerRequests = await client.fetch(
       `*[_type == "prayerRequest"] | order(submittedAt desc) {
-        _id,
-        name,
-        email,
-        phone,
-        category,
-        request,
-        isConfidential,
-        status,
-        submittedAt
+        _id, name, email, phone, category, request,
+        isConfidential, status, submittedAt
       }`
     );
 

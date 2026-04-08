@@ -105,8 +105,7 @@ export default function ContactPage() {
     setLoading(true);
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-      const res = await fetch(`${backendUrl}/api/contact`, {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -384,11 +383,11 @@ export default function ContactPage() {
               <div className="pt-6">
                 <div className="inline-block w-full px-6 py-6 bg-[#48007e] rounded-2xl shadow-lg">
                   <h3 className="font-satoshi text-xl text-white">
-                    Fast Response Guarantee
+                    Fast Response Guaranteed
                   </h3>
-                  <p className="font-aeonik text-base text-gray-100 mt-1">
+                  {/* <p className="font-aeonik text-base text-gray-100 mt-1">
                     We respond within 24 hours during business days.
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>

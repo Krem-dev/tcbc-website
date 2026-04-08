@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import EventDetailModal from "@/components/EventDetailModal";
 
 type ServiceTime = {
   day: string;
@@ -13,10 +14,17 @@ type SanityEvent = {
   _id: string;
   title: string;
   startDate: string;
+  endDate?: string;
   location: string;
   description: string;
   ministry?: string;
   category?: string;
+  image?: {
+    asset?: {
+      url?: string;
+    };
+    alt?: string;
+  };
 };
 
 type CalendarDay = {
@@ -156,164 +164,110 @@ const ChurchCalendar: React.FC<ChurchCalendarProps> = ({ ministryFilter }) => {
     );
   };
 
-  return (
-    <section className="bg-white py-16">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-12 text-center">
-          <h2 className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl">
-            Church <span className="text-[#7c01cd]">Calendar</span>
-          </h2>
-          <p className="font-aeonik mx-auto max-w-3xl text-lg text-gray-600">
-            Join us for worship, fellowship, and spiritual growth. Find the perfect event to connect with our community.
-          </p>
-        </div>
+  const today = new Date();
+  const isToday = (dayNum: number) =>
+    currentDate.getFullYear() === today.getFullYear() &&
+    currentDate.getMonth() === today.getMonth() &&
+    dayNum === today.getDate();
 
+  return (
+    <section className="bg-gray-50 py-16">
+      <div className="mx-auto max-w-7xl px-4">
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">Loading calendar...</p>
+            <p className="text-gray-500">Loading calendar...</p>
           </div>
         ) : (
-          <div>
-            <div className="mb-6 flex items-center justify-between">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            {/* Month navigation */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <button
                 onClick={handlePrevMonth}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <ChevronLeft className="w-6 h-6 text-[#48007e]" />
+                <ChevronLeft className="w-5 h-5 text-gray-500" />
               </button>
-              <h3 className="text-2xl font-bold text-[#48007e]">{monthName}</h3>
+              <h3 className="text-xl font-semibold text-gray-900">{monthName}</h3>
               <button
                 onClick={handleNextMonth}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <ChevronRight className="w-6 h-6 text-[#48007e]" />
+                <ChevronRight className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="grid grid-cols-7 bg-[#48007e] text-white">
-                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                  <div key={day} className="p-4 text-center font-semibold">
-                    {day}
-                  </div>
-                ))}
-              </div>
+            {/* Day headers */}
+            <div className="grid grid-cols-7 border-b border-gray-100">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div key={day} className="py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {day}
+                </div>
+              ))}
+            </div>
 
-              <div className="grid grid-cols-7">
-                {calendarDays.map((day, index) => (
+            {/* Calendar grid */}
+            <div className="grid grid-cols-7">
+              {calendarDays.map((day, index) => {
+                const hasContent = day.services.length > 0 || day.events.length > 0;
+                return (
                   <div
                     key={index}
-                    className={`min-h-32 p-3 border border-gray-200 ${
-                      !day.isCurrentMonth ? "bg-gray-50" : "bg-white"
+                    className={`min-h-[120px] p-2.5 border-b border-r border-gray-100 [&:nth-child(7n)]:border-r-0 ${
+                      !day.isCurrentMonth ? "bg-gray-50/60" : "bg-white"
                     }`}
                   >
-                    <div className={`text-sm font-semibold mb-2 ${
-                      day.isCurrentMonth ? "text-[#48007e]" : "text-gray-400"
+                    <div className={`text-sm mb-2 ${
+                      isToday(day.date) && day.isCurrentMonth
+                        ? "w-7 h-7 rounded-full bg-[#48007e] text-white flex items-center justify-center font-semibold"
+                        : day.isCurrentMonth
+                          ? "font-medium text-gray-800"
+                          : "text-gray-300"
                     }`}>
                       {day.date}
                     </div>
-                    <div className="space-y-1 text-xs overflow-y-auto max-h-24">
+                    <div className="space-y-1 text-xs overflow-y-auto max-h-[80px]">
                       {day.services.map((service, idx) => (
                         <div
                           key={`service-${idx}`}
-                          className="bg-[#7c01cd]/10 text-[#48007e] p-1.5 rounded border-l-2 border-[#7c01cd]"
+                          className="px-2 py-1 rounded-md bg-gray-100 text-gray-600"
                         >
-                          <div className="font-semibold truncate">{service.service}</div>
-                          <div className="text-[10px] text-gray-600">{service.time}</div>
+                          <div className="font-medium text-gray-800 truncate">{service.service}</div>
+                          <div className="text-[10px] text-gray-400">{service.time}</div>
                         </div>
                       ))}
                       {day.events.slice(0, 2).map((event, idx) => (
                         <button
                           key={`event-${idx}`}
                           onClick={() => setSelectedEvent(event)}
-                          className="w-full bg-blue-100 text-blue-800 p-1.5 rounded border-l-2 border-blue-500 hover:bg-blue-200 transition text-left"
+                          className="w-full text-left px-2 py-1 rounded-md bg-[#48007e] text-white hover:bg-[#5a009e] transition cursor-pointer"
                         >
-                          <div className="font-semibold truncate">{event.title}</div>
-                          <div className="text-[10px] text-blue-600">{event.location}</div>
+                          <div className="font-medium truncate">{event.title}</div>
+                          <div className="text-[10px] text-white/70">{event.location}</div>
                         </button>
                       ))}
                       {day.events.length > 2 && (
                         <button
                           onClick={() => setSelectedEvent(day.events[0])}
-                          className="w-full text-xs text-blue-600 hover:text-blue-800 py-1 text-center"
+                          className="w-full text-[11px] text-[#48007e] font-medium hover:underline py-0.5 text-center"
                         >
                           +{day.events.length - 2} more
                         </button>
                       )}
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </div>
         )}
       </div>
 
       {/* Event Detail Modal */}
-      {selectedEvent && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedEvent(null)}
-        >
-          <div
-            className="bg-white rounded-2xl max-w-md w-full shadow-xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <h2 className="font-satoshi text-2xl sm:text-3xl font-bold text-gray-800 flex-1 pr-4">
-                {selectedEvent.title}
-              </h2>
-              <button
-                onClick={() => setSelectedEvent(null)}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-              >
-                ✕
-              </button>
-            </div>
-
-            {selectedEvent.category && (
-              <span className="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full mb-6 capitalize">
-                {selectedEvent.category}
-              </span>
-            )}
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <p className="font-aeonik text-sm text-gray-600 mb-1">Date & Time</p>
-                <p className="font-satoshi font-semibold text-gray-800">
-                  {new Date(selectedEvent.startDate).toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })} at{' '}
-                  {new Date(selectedEvent.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </p>
-              </div>
-              <div>
-                <p className="font-aeonik text-sm text-gray-600 mb-1">Location</p>
-                <p className="font-satoshi font-semibold text-gray-800">{selectedEvent.location}</p>
-              </div>
-            </div>
-
-            {selectedEvent.description && (
-              <div className="mb-6">
-                <p className="font-aeonik text-sm text-gray-600 mb-2">Description</p>
-                <p className="font-aeonik text-gray-700 leading-relaxed">
-                  {selectedEvent.description}
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={() => setSelectedEvent(null)}
-              className="w-full py-3 bg-[#48007e] text-white font-semibold rounded-lg hover:bg-[#7c01cd] transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <EventDetailModal
+        event={selectedEvent}
+        isOpen={!!selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
     </section>
   );
 };
