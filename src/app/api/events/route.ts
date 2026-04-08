@@ -38,8 +38,6 @@ export async function GET(request: Request) {
     } else {
       // Fetch all events
       const events = await getEvents();
-      console.log("Events from Sanity:", events);
-      console.log("Events count:", events?.length || 0);
       return NextResponse.json(events || []);
     }
   } catch (error) {

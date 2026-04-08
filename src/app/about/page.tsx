@@ -86,7 +86,7 @@ export default function AboutPage() {
     },
   ];
 
-  const leadership: { _id: string; name: string; role: string; category: string; image: string; email?: string; phone?: string }[] = [
+  const leadership: { _id: string; name: string; role: string; category: string; image: string; email?: string; phone?: string; imagePosition?: string }[] = [
     // Board of Directors (7)
     { _id: "board-1", name: "Mathias Awua", role: "Leader", category: "board", image: "/leadership/mathias-awua.jpg" },
     { _id: "board-2", name: "Dr. Dinah Ama Boadi", role: "Secretary", category: "board", image: "/leadership/dr-ama-boadi.jpg" },
@@ -113,8 +113,8 @@ export default function AboutPage() {
     { _id: "council-8", name: "Alice Vicku", role: "Children's Leader", category: "council", image: "/leadership/alice-vicku.jpg" },
     { _id: "council-9", name: "Mathias Awuah", role: "Men's Leader", category: "council", image: "/leadership/mathias-awuah.jpg" },
     { _id: "council-10", name: "Doris Appiah-Boadu", role: "Housekeeping and Decor", category: "council", image: "/leadership/doris-appiah-boadu.jpg" },
-    { _id: "council-11", name: "Jeffrey Opoku Nyame", role: "Facilities, Logistics and Transportation", category: "council", image: "/leadership/jeffrey-opoku-nyame.jpg", imagePosition: "top" as const },
-    { _id: "council-12", name: "Isaac Tawiah", role: "Protocol Team", category: "council", image: "/leadership/isaac-tawiah.jpg", imagePosition: "top" as const },
+    { _id: "council-11", name: "Jeffrey Opoku Nyame", role: "Facilities, Logistics and Transportation", category: "council", image: "/leadership/jeffrey-opoku-nyame.jpg", imagePosition: "top" },
+    { _id: "council-12", name: "Isaac Tawiah", role: "Protocol Team", category: "council", image: "/leadership/isaac-tawiah.jpg", imagePosition: "top" },
     { _id: "council-13", name: "Thomas Parker Afferi", role: "Media Team", category: "council", image: "/leadership/thomas-parker-afferi.jpg" },
     { _id: "council-14", name: "Helena Yeboah", role: "Social Events", category: "council", image: "/leadership/dr-helena-yeboah.jpg" },
     { _id: "council-15", name: "Frank Adou", role: "Finance", category: "council", image: "/leadership/frank-adou.jpg" },
@@ -488,7 +488,7 @@ export default function AboutPage() {
                         src={leader.image}
                         alt={leader.name}
                         fill
-                        className={`object-cover ${(leader as any).imagePosition === "top" ? "object-top" : ""}`}
+                        className={`object-cover ${leader.imagePosition === "top" ? "object-top" : ""}`}
                       />
                     </div>
 
