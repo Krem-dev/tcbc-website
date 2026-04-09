@@ -177,7 +177,7 @@ function generatePDF(data: MembershipFormData): Uint8Array {
   yPosition += 5;
   addSectionHeader("FOR OFFICE USE ONLY");
   addField("Membership Orientation Completed", "[ ] Yes  [ ] No");
-  addField("Date Received", "_______________________");
+  addField("Date Received", new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }));
   addField("Church Leader's Signature", "_______________________");
 
   return new Uint8Array(Buffer.from(doc.output("arraybuffer")));

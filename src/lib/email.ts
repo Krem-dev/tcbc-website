@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
-const smtpUser = process.env.SMTP_USER || "tcbcottawa@gmail.com";
-const smtpPassword = process.env.SMTP_PASSWORD || "fbxw plwn juib atbn";
+const smtpUser = process.env.SMTP_USER;
+const smtpPassword = process.env.SMTP_PASSWORD;
 const churchEmail = process.env.CHURCH_EMAIL || "tcbcottawa@gmail.com";
 
 function createTransporter() {
