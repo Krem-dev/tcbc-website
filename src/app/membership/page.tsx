@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
 
@@ -72,7 +71,6 @@ export default function MembershipPage() {
     date: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const ministryOptions = [
@@ -132,7 +130,17 @@ export default function MembershipPage() {
         a.remove();
         window.URL.revokeObjectURL(url);
 
-        setSubmitted(true);
+        toast.success("Application submitted successfully! A church leader will contact you soon.");
+        setFormData({
+          firstName: "", lastName: "", preferredName: "", dateOfBirth: "", gender: "",
+          maritalStatus: "", phoneNumber: "", email: "", homeAddress: "", memberSince: "",
+          heardAbout: "", acceptedJesus: null, baptizedWater: null, baptizedWaterYear: "",
+          willingBaptism: "", baptizedHolySpirit: null, baptizedHolySpiritYear: "",
+          willingHolySpirit: "", previousChurch: "", ministryInterests: [], ministryOther: "",
+          completedClasses: null, willingServe: null, willingPrayers: null, willingTithes: null,
+          agreeTeachings: null, understandMembership: null, declarationAccepted: false,
+          signature: "", date: "",
+        });
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         toast.error("Failed to submit form. Please try again.");
@@ -181,36 +189,7 @@ export default function MembershipPage() {
 
       <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {submitted ? (
-            <div className="bg-green-50 rounded-2xl border-2 border-green-200 p-12 sm:p-16 text-center">
-              <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
-              <h2 className="font-satoshi text-4xl font-bold text-gray-800 mb-4">
-                Application Submitted!
-              </h2>
-              <p className="font-aeonik text-lg text-gray-600 mb-8">
-                Your application has been submitted successfully. A church leader will contact you soon.
-              </p>
-              <button
-                onClick={() => {
-                  setSubmitted(false);
-                  setFormData({
-                    firstName: "", lastName: "", preferredName: "", dateOfBirth: "", gender: "",
-                    maritalStatus: "", phoneNumber: "", email: "", homeAddress: "", memberSince: "",
-                    heardAbout: "", acceptedJesus: null, baptizedWater: null, baptizedWaterYear: "",
-                    willingBaptism: "", baptizedHolySpirit: null, baptizedHolySpiritYear: "",
-                    willingHolySpirit: "", previousChurch: "", ministryInterests: [], ministryOther: "",
-                    completedClasses: null, willingServe: null, willingPrayers: null, willingTithes: null,
-                    agreeTeachings: null, understandMembership: null, declarationAccepted: false,
-                    signature: "", date: "",
-                  });
-                }}
-                className="bg-[#48007e] text-white px-8 py-3 rounded-lg hover:bg-[#7c01cd] transition font-semibold"
-              >
-                Submit Another Application
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
               {/* Intro */}
               <div className="mb-10 p-5 bg-[#48007e]/5 border-l-4 border-[#48007e] rounded-r-lg">
                 <p className="font-aeonik text-gray-700">
@@ -303,11 +282,21 @@ export default function MembershipPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
                       <div>
                         <label className="block font-aeonik text-sm font-medium text-gray-600 mb-2">Member Since (if applicable)</label>
-                        <input type="text" name="memberSince" value={formData.memberSince} onChange={handleInputChange} className={inputClass} />
+                        <input type="date" name="memberSince" value={formData.memberSince} onChange={handleInputChange} className={inputClass} />
                       </div>
                       <div>
                         <label className="block font-aeonik text-sm font-medium text-gray-600 mb-2">How did you hear about TCBC?</label>
-                        <input type="text" name="heardAbout" value={formData.heardAbout} onChange={handleInputChange} className={inputClass} />
+                        <select name="heardAbout" value={formData.heardAbout} onChange={handleInputChange} className={inputClass}>
+                          <option value="">Select an option</option>
+                          <option value="Friend or Family">Friend or Family</option>
+                          <option value="Social Media">Social Media</option>
+                          <option value="Church Website">Church Website</option>
+                          <option value="Online Search">Online Search</option>
+                          <option value="Community Event">Community Event</option>
+                          <option value="Flyer or Poster">Flyer or Poster</option>
+                          <option value="Walk-in">Walk-in</option>
+                          <option value="Other">Other</option>
+                        </select>
                       </div>
                     </div>
 
@@ -495,7 +484,6 @@ export default function MembershipPage() {
                 </button>
               </div>
             </form>
-          )}
         </div>
       </section>
 

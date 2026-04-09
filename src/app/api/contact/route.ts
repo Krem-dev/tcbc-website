@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "next-sanity";
+import { sendEmail } from "@/lib/email";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
@@ -40,7 +41,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // TODO: Add email notification when switching to Hostinger SMTP
+    // Send email notification
+    await sendEmail({
+      subject: `New Contact Message from ${name}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        ${organization ? `<p><strong>Organization:</strong> ${organization}</p>` : ""}
+        ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ""}
+        <hr />
+        <p>${message.replace(/\n/g, "<br>")}</p>
+      `,
+    });
 
     return NextResponse.json(
       { success: true, message: "Message sent successfully" },

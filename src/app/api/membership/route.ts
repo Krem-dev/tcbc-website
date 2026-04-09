@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
 import { createClient } from "next-sanity";
+import { sendEmail } from "@/lib/email";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
@@ -175,7 +176,7 @@ function generatePDF(data: MembershipFormData): Uint8Array {
 
   yPosition += 5;
   addSectionHeader("FOR OFFICE USE ONLY");
-  addField("Membership Orientation Completed", "☐ Yes ☐ No");
+  addField("Membership Orientation Completed", "[ ] Yes  [ ] No");
   addField("Date Received", "_______________________");
   addField("Church Leader's Signature", "_______________________");
 
@@ -226,9 +227,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Generate and return PDF
+    // Generate PDF
     const pdfBuffer = generatePDF(formData);
-    const filename = `TCBC_Membership_${formData.firstName}_${formData.lastName}_${Date.now()}.pdf`;
+    const filename = `TCBC_Membership_${formData.firstName}_${formData.lastName}.pdf`;
+
+    // Send email with PDF attachment
+    await sendEmail({
+      subject: `New Membership Application — ${formData.firstName} ${formData.lastName}`,
+      html: `
+        <h2>New Membership Application</h2>
+        <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
+        <p><strong>Email:</strong> ${formData.email}</p>
+        <p><strong>Phone:</strong> ${formData.phoneNumber}</p>
+        <p>Please see the attached PDF for full details.</p>
+      `,
+      attachments: [
+        {
+          filename,
+          content: Buffer.from(pdfBuffer),
+          contentType: "application/pdf",
+        },
+      ],
+    });
 
     return new NextResponse(Buffer.from(pdfBuffer), {
       status: 200,
