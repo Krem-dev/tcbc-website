@@ -9,176 +9,293 @@ const token = process.env.SANITY_API_TOKEN;
 
 const sanityClient =
   projectId && dataset && token
-    ? createClient({
-        projectId,
-        dataset,
-        apiVersion: "2024-01-01",
-        token,
-        useCdn: false,
-      })
+    ? createClient({ projectId, dataset, apiVersion: "2024-01-01", token, useCdn: false })
     : null;
 
 interface MembershipFormData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   preferredName: string;
-  dateOfBirth: string;
-  gender: string;
-  maritalStatus: string;
+  homeAddress: string;
   phoneNumber: string;
   email: string;
-  homeAddress: string;
-  memberSince: string;
-  heardAbout: string;
+  dateOfBirth: string;
+  maritalStatus: string;
+  hasChildren: boolean;
+  childrenWorshippingAtTCBC: boolean;
+  childrenNames: string;
+  occupation: string;
+  dateStartedAttending: string;
   acceptedJesus: boolean;
   baptizedWater: boolean;
+  willingBaptism: boolean;
   baptizedWaterYear: string;
-  willingBaptism: string;
   baptizedHolySpirit: boolean;
+  willingHolySpirit: boolean;
   baptizedHolySpiritYear: string;
-  willingHolySpirit: string;
-  previousChurch: string;
+  previouslyMemberOfChurch: boolean;
+  previousChurchName: string;
+  currentlyMemberOfChurch: boolean;
+  currentChurchDetails: string;
+  heardAbout: string;
   ministryInterests: string[];
+  ministryOther: string;
+  partISignature: string;
+  partIDate: string;
+  membershipClassCompleted: boolean;
+  membershipClassDate: string;
+  commitClasses: boolean;
+  commitMission: boolean;
+  commitConstitution: boolean;
+  commitPeace: boolean;
+  commitLeadership: boolean;
   willingServe: boolean;
   willingPrayers: boolean;
   willingTithes: boolean;
   agreeTeachings: boolean;
-  understandMembership: boolean;
-  declarationAccepted: boolean;
-  signature: string;
-  date: string;
+  partIISignature: string;
+  partIIDate: string;
 }
 
-function generatePDF(data: MembershipFormData): Uint8Array {
-  const doc = new jsPDF();
-  let yPosition = 15;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 12;
-  const contentWidth = pageWidth - margin * 2;
+function yn(val: boolean | null | undefined): string {
+  if (val === true) return "Yes";
+  if (val === false) return "No";
+  return "N/A";
+}
 
-  const addTitle = (title: string) => {
-    if (yPosition > pageHeight - 40) {
-      doc.addPage();
-      yPosition = 15;
-    }
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, pageWidth / 2, yPosition, { align: "center" });
-    yPosition += 8;
-    doc.setDrawColor(72, 0, 126);
-    doc.line(margin, yPosition, pageWidth - margin, yPosition);
-    yPosition += 8;
+function generatePDF(d: MembershipFormData): Uint8Array {
+  const doc = new jsPDF();
+  let y = 15;
+  const pw = doc.internal.pageSize.getWidth();
+  const ph = doc.internal.pageSize.getHeight();
+  const m = 12;
+  const cw = pw - m * 2;
+
+  const checkPage = (need: number) => {
+    if (y > ph - need) { doc.addPage(); y = 15; }
   };
 
-  const addSectionHeader = (title: string) => {
-    if (yPosition > pageHeight - 35) {
-      doc.addPage();
-      yPosition = 15;
-    }
+  const title = (text: string) => {
+    checkPage(40);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text(text, pw / 2, y, { align: "center" });
+    y += 7;
+    doc.setDrawColor(72, 0, 126);
+    doc.line(m, y, pw - m, y);
+    y += 8;
+  };
+
+  const section = (text: string) => {
+    checkPage(30);
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(72, 0, 126);
-    doc.text(title, margin, yPosition);
-    yPosition += 6;
+    doc.text(text, m, y);
+    y += 5;
     doc.setDrawColor(200, 200, 200);
-    doc.line(margin, yPosition, pageWidth - margin, yPosition);
-    yPosition += 5;
+    doc.line(m, y, pw - m, y);
+    y += 5;
     doc.setTextColor(0, 0, 0);
   };
 
-  const addField = (label: string, value: string) => {
-    if (yPosition > pageHeight - 12) {
-      doc.addPage();
-      yPosition = 15;
-    }
+  const field = (label: string, value: string) => {
+    checkPage(16);
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.text(`${label}:`, margin, yPosition);
-    yPosition += 5;
+    const labelLines = doc.splitTextToSize(`${label}:`, cw);
+    doc.text(labelLines, m, y);
+    y += labelLines.length * 4.5;
     doc.setFont("helvetica", "normal");
-    const lines = doc.splitTextToSize(value, contentWidth);
-    doc.text(lines, margin, yPosition);
-    yPosition += lines.length * 4.5 + 2;
+    const valLines = doc.splitTextToSize(value || "N/A", cw);
+    doc.text(valLines, m, y);
+    y += valLines.length * 4.5 + 3;
   };
 
-  const addTwoColumnFields = (label1: string, value1: string, label2: string, value2: string) => {
-    if (yPosition > pageHeight - 15) {
-      doc.addPage();
-      yPosition = 15;
-    }
-    const colWidth = (contentWidth - 4) / 2;
-    
+  const field2 = (l1: string, v1: string, l2: string, v2: string) => {
+    checkPage(20);
+    const col = (cw - 10) / 2;
+    const col2X = m + col + 10;
+
+    // Column 1
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.text(`${label1}:`, margin, yPosition);
-    yPosition += 5;
+    const lab1 = doc.splitTextToSize(`${l1}:`, col);
+    doc.text(lab1, m, y);
+    const startY = y;
+    let y1 = y + lab1.length * 4.5;
     doc.setFont("helvetica", "normal");
-    const lines1 = doc.splitTextToSize(value1, colWidth);
-    doc.text(lines1, margin, yPosition);
-    
-    const maxHeight1 = lines1.length * 4.5;
-    
+    const val1 = doc.splitTextToSize(v1 || "N/A", col);
+    doc.text(val1, m, y1);
+    y1 += val1.length * 4.5;
+
+    // Column 2
     doc.setFont("helvetica", "bold");
-    doc.text(`${label2}:`, margin + colWidth + 2, yPosition - 5);
+    const lab2 = doc.splitTextToSize(`${l2}:`, col);
+    doc.text(lab2, col2X, startY);
+    let y2 = startY + lab2.length * 4.5;
     doc.setFont("helvetica", "normal");
-    const lines2 = doc.splitTextToSize(value2, colWidth);
-    doc.text(lines2, margin + colWidth + 2, yPosition);
-    
-    const maxHeight2 = lines2.length * 4.5;
-    yPosition += Math.max(maxHeight1, maxHeight2) + 3;
+    const val2 = doc.splitTextToSize(v2 || "N/A", col);
+    doc.text(val2, col2X, y2);
+    y2 += val2.length * 4.5;
+
+    y = Math.max(y1, y2) + 3;
   };
 
-  addTitle("TCBC Membership Application");
+  // ─── HEADER ───
+  title("TCBC Membership Application Form");
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "italic");
+  doc.text("Two-Stage Membership Process", pw / 2, y, { align: "center" });
+  y += 8;
 
-  addSectionHeader("Personal Information");
-  addTwoColumnFields("First Name", data.firstName, "Last Name", data.lastName);
-  addField("Preferred Name", data.preferredName);
-  addTwoColumnFields("Date of Birth", data.dateOfBirth, "Gender", data.gender);
-  addTwoColumnFields("Marital Status", data.maritalStatus, "Phone Number", data.phoneNumber);
-  addField("Email Address", data.email);
-  addField("Home Address", data.homeAddress);
+  // ─── PART I ───
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(72, 0, 126);
+  doc.text("PART I - INITIAL MEMBERSHIP APPLICATION", m, y);
+  doc.setTextColor(0, 0, 0);
+  y += 8;
 
-  yPosition += 3;
-  addSectionHeader("Church Information");
-  addTwoColumnFields("Member Since", data.memberSince || "N/A", "How did you hear about TCBC", data.heardAbout);
-  addField("Accepted Jesus Christ as Lord and Savior", data.acceptedJesus ? "Yes" : "No");
-  addField("Baptized in Water by Immersion", data.baptizedWater ? "Yes" : "No");
-  if (data.baptizedWater) {
-    addField("Year of Baptism", data.baptizedWaterYear);
-  } else {
-    addField("Willing to be Baptized at earliest opportunity", data.willingBaptism);
+  section("A. Personal Information");
+  field("Full Name", d.fullName);
+  field("Preferred Name", d.preferredName);
+  field("Home Address", d.homeAddress);
+  field2("Phone Number", d.phoneNumber, "Email Address", d.email);
+  field2("Date of Birth", d.dateOfBirth, "Marital Status", d.maritalStatus);
+  field("Do you have children?", yn(d.hasChildren));
+  if (d.hasChildren) {
+    field("Will they worship at TCBC?", yn(d.childrenWorshippingAtTCBC));
+    if (d.childrenNames) field("Children's Names", d.childrenNames);
   }
-  addField("Baptized in Holy Spirit with evidence of speaking in tongues", data.baptizedHolySpirit ? "Yes" : "No");
-  if (data.baptizedHolySpirit) {
-    addField("Year of Holy Spirit Baptism", data.baptizedHolySpiritYear);
+  field2("Occupation", d.occupation, "Date Started Attending TCBC", d.dateStartedAttending || "N/A");
+
+  y += 3;
+  section("B. Church Background");
+  field("1. Accepted Jesus Christ as Lord and Saviour", yn(d.acceptedJesus));
+  field("2. Baptized by immersion after salvation", yn(d.baptizedWater));
+  if (d.baptizedWater === false) field("   Willing to be baptized at earliest opportunity", yn(d.willingBaptism));
+  if (d.baptizedWater === true) field("   Estimated year of baptism", d.baptizedWaterYear);
+  field("3. Received the baptism of the Holy Spirit", yn(d.baptizedHolySpirit));
+  if (d.baptizedHolySpirit === false) field("   Willing to receive teaching/guidance", yn(d.willingHolySpirit));
+  if (d.baptizedHolySpirit === true) field("   Approximate year", d.baptizedHolySpiritYear);
+  field("4. Previously a member of another church", yn(d.previouslyMemberOfChurch));
+  if (d.previouslyMemberOfChurch) field("   Church name", d.previousChurchName);
+  field("5. Currently a member of another church", yn(d.currentlyMemberOfChurch));
+  if (d.currentlyMemberOfChurch) field("   Details", d.currentChurchDetails);
+  field("6. How did you hear about TCBC?", d.heardAbout);
+
+  y += 3;
+  section("C. Ministry Interests");
+  field("Selected Ministries", d.ministryInterests.length > 0 ? d.ministryInterests.join(", ") : "None selected");
+  if (d.ministryOther) field("Other", d.ministryOther);
+
+  y += 3;
+  section("D. Applicant Declaration - Part I");
+  field2("Applicant Signature", d.partISignature, "Date", d.partIDate);
+
+  // ─── PART II ───
+  const partIIFilled = d.partIISignature || d.membershipClassCompleted;
+
+  if (partIIFilled) {
+    y += 5;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(72, 0, 126);
+    checkPage(20);
+    doc.text("PART II - MEMBERSHIP CONFIRMATION", m, y);
+    doc.setTextColor(0, 0, 0);
+    y += 8;
+
+    section("A. Membership Class Completion");
+    field("Completed TCBC membership classes", yn(d.membershipClassCompleted));
+    if (d.membershipClassCompleted) field("Date completed", d.membershipClassDate);
+
+    y += 3;
+    section("B. Membership Commitment");
+    field("Completed required membership classes", yn(d.commitClasses));
+    field("Understand and support TCBC mission/values", yn(d.commitMission));
+    field("Agree to uphold constitution and leadership", yn(d.commitConstitution));
+    field("Seek to live in peace, unity, and fellowship", yn(d.commitPeace));
+    field("Understand membership concerns handled per constitution", yn(d.commitLeadership));
+    field("Willing to serve in the church", yn(d.willingServe));
+    field("Support with prayers and regular attendance", yn(d.willingPrayers));
+    field("Support with tithes and offerings", yn(d.willingTithes));
+    field("Agree to uphold teachings, values, and constitution", yn(d.agreeTeachings));
+
+    y += 3;
+    section("C. Final Declaration - Part II");
+    field2("Applicant Signature", d.partIISignature, "Date", d.partIIDate);
   } else {
-    addField("Willing to receive baptism of Holy Spirit", data.willingHolySpirit);
+    y += 5;
+    checkPage(15);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(120, 120, 120);
+    doc.text("Part II — To be completed after TCBC membership classes.", m, y);
+    doc.setTextColor(0, 0, 0);
+    y += 8;
   }
-  addField("Previous Church", data.previousChurch || "N/A");
 
-  yPosition += 3;
-  addSectionHeader("Ministry Interests");
-  addField("Selected Ministries", data.ministryInterests.length > 0 ? data.ministryInterests.join(", ") : "None selected");
+  // ─── CHURCH USE ONLY ───
+  y += 5;
+  checkPage(100);
+  section("FOR CHURCH USE ONLY");
 
-  yPosition += 3;
-  addSectionHeader("Availability and Commitment");
-  addField("Willing to serve in the church", data.willingServe ? "Yes" : "No");
-  addField("Support with faithful prayers and attendance", data.willingPrayers ? "Yes" : "No");
-  addField("Support with tithes and offerings", data.willingTithes ? "Yes" : "No");
-  addField("Agree to uphold Church teachings and constitution", data.agreeTeachings ? "Yes" : "No");
-  addField("Understand membership terms and conditions", data.understandMembership ? "Yes" : "No");
+  const tableRows: [string, string][] = [
+    ["Date Part I Received:", new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })],
+    ["Membership Classes Completed:", "[ ] Yes    [ ] No"],
+    ["Date Membership Classes Completed:", "_______________________"],
+    ["Membership Status:", "[ ] Pending    [ ] Approved    [ ] Deferred"],
+    ["Effective Date of Membership:", "_______________________"],
+    ["Recommended By:", "_______________________"],
+    ["Approved By (Church Leader):", "_______________________"],
+  ];
 
-  yPosition += 3;
-  addSectionHeader("Declaration and Signature");
-  addField("Declaration Accepted", data.declarationAccepted ? "Yes" : "No");
-  addTwoColumnFields("Signature", data.signature, "Date", new Date(data.date).toLocaleDateString());
+  const rowH = 10;
+  const colLeft = cw * 0.48;
+  const colRight = cw - colLeft;
 
-  yPosition += 5;
-  addSectionHeader("FOR OFFICE USE ONLY");
-  addField("Membership Orientation Completed", "[ ] Yes  [ ] No");
-  addField("Date Received", new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }));
-  addField("Church Leader's Signature", "_______________________");
+  for (let i = 0; i < tableRows.length; i++) {
+    checkPage(rowH + 2);
+    const rowY = y;
+
+    // Alternating row background
+    if (i % 2 === 0) {
+      doc.setFillColor(220, 232, 248);
+      doc.rect(m, rowY - 3, cw, rowH, "F");
+    }
+
+    // Borders
+    doc.setDrawColor(180, 180, 180);
+    doc.rect(m, rowY - 3, cw, rowH);
+    doc.line(m + colLeft, rowY - 3, m + colLeft, rowY - 3 + rowH);
+
+    // Label
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text(tableRows[i][0], m + 3, rowY + 2.5);
+
+    // Value
+    doc.setFont("helvetica", "normal");
+    doc.text(tableRows[i][1], m + colLeft + 3, rowY + 2.5);
+
+    y = rowY + rowH;
+  }
+
+  y += 8;
+  checkPage(30);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("Signature: _______________________________", m, y);
+  y += 7;
+  doc.text("Date: ___________________", m, y);
+  y += 10;
+  doc.setFont("helvetica", "normal");
+  doc.text("Notes:", m, y);
+  y += 7;
+  doc.line(m, y, pw - m, y);
+  y += 8;
+  doc.line(m, y, pw - m, y);
 
   return new Uint8Array(Buffer.from(doc.output("arraybuffer")));
 }
@@ -187,38 +304,12 @@ export async function POST(request: NextRequest) {
   try {
     const formData: MembershipFormData = await request.json();
 
-    // Save to Sanity CMS
+    // Save to Sanity
     if (sanityClient) {
       try {
         await sanityClient.create({
           _type: "membership",
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          preferredName: formData.preferredName,
-          dateOfBirth: formData.dateOfBirth,
-          gender: formData.gender,
-          maritalStatus: formData.maritalStatus,
-          phoneNumber: formData.phoneNumber,
-          email: formData.email,
-          homeAddress: formData.homeAddress,
-          memberSince: formData.memberSince,
-          heardAbout: formData.heardAbout,
-          acceptedJesus: formData.acceptedJesus,
-          baptizedWater: formData.baptizedWater,
-          baptizedWaterYear: formData.baptizedWaterYear,
-          willingBaptism: formData.willingBaptism,
-          baptizedHolySpirit: formData.baptizedHolySpirit,
-          baptizedHolySpiritYear: formData.baptizedHolySpiritYear,
-          willingHolySpirit: formData.willingHolySpirit,
-          previousChurch: formData.previousChurch,
-          ministryInterests: formData.ministryInterests,
-          willingServe: formData.willingServe,
-          willingPrayers: formData.willingPrayers,
-          willingTithes: formData.willingTithes,
-          agreeTeachings: formData.agreeTeachings,
-          understandMembership: formData.understandMembership,
-          declarationAccepted: formData.declarationAccepted,
-          signature: formData.signature,
+          ...formData,
           submittedAt: new Date().toISOString(),
           status: "new",
         });
@@ -229,25 +320,19 @@ export async function POST(request: NextRequest) {
 
     // Generate PDF
     const pdfBuffer = generatePDF(formData);
-    const filename = `TCBC_Membership_${formData.firstName}_${formData.lastName}.pdf`;
+    const filename = `TCBC_Membership_${formData.fullName.replace(/\s+/g, "_")}.pdf`;
 
-    // Send email with PDF attachment
+    // Send email
     await sendEmail({
-      subject: `New Membership Application — ${formData.firstName} ${formData.lastName}`,
+      subject: `New Membership Application — ${formData.fullName}`,
       html: `
         <h2>New Membership Application</h2>
-        <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
+        <p><strong>Name:</strong> ${formData.fullName}</p>
         <p><strong>Email:</strong> ${formData.email}</p>
         <p><strong>Phone:</strong> ${formData.phoneNumber}</p>
         <p>Please see the attached PDF for full details.</p>
       `,
-      attachments: [
-        {
-          filename,
-          content: Buffer.from(pdfBuffer),
-          contentType: "application/pdf",
-        },
-      ],
+      attachments: [{ filename, content: Buffer.from(pdfBuffer), contentType: "application/pdf" }],
     });
 
     return new NextResponse(Buffer.from(pdfBuffer), {
