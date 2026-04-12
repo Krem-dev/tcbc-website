@@ -213,7 +213,7 @@ export default function MembershipPage() {
           <form onSubmit={handleSubmit}>
 
             {/* Intro */}
-            <div className="mb-10 p-6 bg-[#48007e]/5 border-l-4 border-[#48007e] rounded-r-lg space-y-2">
+            <div className="mb-10 p-6 bg-gray-50 rounded-lg space-y-2">
               <p className="font-satoshi font-bold text-gray-800">Two-Stage Membership Process</p>
               <ul className="font-aeonik text-sm text-gray-700 space-y-1 list-disc list-inside">
                 <li><strong>Part I</strong> is for individuals who want to begin the membership process.</li>
