@@ -199,7 +199,7 @@ const CORE_MINISTRIES = [
 
 export default function MinistryPage() {
   const [ministries, setMinistries] = useState<Ministry[]>([]);
-  const [expandedSection, setExpandedSection] = useState<string>("");
+  const [expandedSection, setExpandedSection] = useState<string>("1");
 
   const displayMinistries = ministries.length > 0 ? ministries : FALLBACK_MINISTRIES;
 
