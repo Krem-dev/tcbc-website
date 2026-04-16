@@ -8,12 +8,30 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tcbcottawa.org"),
   title: "TCBC OTTAWA",
   description:
     "Join us at TCBC as we grow together in Christ and serve our community. Experience worship, fellowship, and spiritual growth.",
   keywords: ["church", "TCBC", "worship", "community", "faith", "sermons", "events"],
   icons: {
     icon: "/TCBC_logo_vector.pdf2-01 (2).png",
+  },
+  openGraph: {
+    title: "The Chosen Bible Church Ottawa",
+    description:
+      "Join us at TCBC as we grow together in Christ and serve our community.",
+    url: "https://tcbcottawa.org",
+    siteName: "The Chosen Bible Church",
+    images: [{ url: "/bib-4.jpg", width: 1200, height: 630 }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Chosen Bible Church Ottawa",
+    description:
+      "Join us at TCBC as we grow together in Christ and serve our community.",
+    images: ["/bib-4.jpg"],
   },
 };
 

@@ -92,7 +92,7 @@ export default function AboutPage() {
     { _id: "board-2", name: "Dr. Dinah Ama Boadi", role: "Secretary", category: "board", image: "/leadership/dr-ama-boadi.jpg" },
     { _id: "board-3", name: "Dr. Kwame Kwakye Peprah", role: "Member", category: "board", image: "/leadership/dr-kwame-kwakye-peprah.jpg" },
     { _id: "board-4", name: "Dr. Lord Kavi", role: "Member", category: "board", image: "/leadership/dr-lord-kavi.jpg" },
-    { _id: "board-5", name: "Mr. Joseph Chukuemeka", role: "Member", category: "board", image: "/leadership/mr-joseph-chukuemeka.jpg" },
+    { _id: "board-5", name: "Mr. Okwuoma Joseph Chukwukelu", role: "Member", category: "board", image: "/leadership/mr-joseph-chukuemeka.jpg" },
     { _id: "board-6", name: "Mr. Frank Adou", role: "Member", category: "board", image: "/leadership/frank-adou.jpg" },
     { _id: "board-7", name: "Ps. Ebenezer Kwame Amponsah", role: "Member", category: "board", image: "/leadership/ps-kwame-amponsah.jpg" },
 
