@@ -190,10 +190,10 @@ export default function HomePage() {
               <div className="w-8 h-8 border-2 border-[#48007e]/20 border-t-[#48007e] rounded-full animate-spin" />
             </div>
           ) : homepageContent?.pastorWelcome ? (
-            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8 sm:gap-12 items-center">
               {/* Image - Circle Design */}
               <div className="flex justify-center lg:justify-start">
-                <div className="relative w-80 h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
+                <div className="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#48007e]/10">
                   <Image
                     src={homepageContent.pastorWelcome.pastorImage?.asset?.url || "/bib-4.jpg"}
                     alt={homepageContent.pastorWelcome.pastorName || "Pastor"}
@@ -249,7 +249,7 @@ export default function HomePage() {
           <div className="mb-12 text-center">
             <h2
               id="service-times-heading"
-              className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl"
+              className="font-satoshi mb-4 text-3xl sm:text-4xl font-bold text-[#48007e] lg:text-5xl"
             >
               {homepageContent?.upcomingEvents?.heading || "Upcoming Events"}
             </h2>

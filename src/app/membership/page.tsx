@@ -377,7 +377,7 @@ export default function MembershipPage() {
               <div className="mb-12">
                 <h3 className="font-satoshi text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">C. Ministry Interests</h3>
                 <p className="font-aeonik text-sm text-gray-500 mb-4">Please indicate the ministry areas in which you may be interested in serving:</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                   {ministryOptions.map((ministry) => (
                     <label key={ministry} className="flex items-center cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition">
                       <input type="checkbox" checked={formData.ministryInterests.includes(ministry)} onChange={() => handleMinistryChange(ministry)} className="mr-3 w-4 h-4 accent-[#48007e]" />
@@ -518,14 +518,14 @@ export default function MembershipPage() {
                     {[
                       { label: "Date Part I Received:", value: <div className="border-b border-gray-400 min-h-[24px]" /> },
                       { label: "Membership Classes Completed:", value: (
-                        <div className="flex gap-5">
+                        <div className="flex flex-wrap gap-x-4 gap-y-1">
                           <span className="flex items-center gap-1"><span className="inline-block w-4 h-4 border-2 border-gray-400 rounded-sm" /> Yes</span>
                           <span className="flex items-center gap-1"><span className="inline-block w-4 h-4 border-2 border-gray-400 rounded-sm" /> No</span>
                         </div>
                       )},
                       { label: "Date Membership Classes Completed:", value: <div className="border-b border-gray-400 min-h-[24px]" /> },
                       { label: "Membership Status:", value: (
-                        <div className="flex gap-5">
+                        <div className="flex flex-wrap gap-x-4 gap-y-1">
                           {["Pending", "Approved", "Deferred"].map((s) => (
                             <span key={s} className="flex items-center gap-1"><span className="inline-block w-4 h-4 border-2 border-gray-400 rounded-sm" /> {s}</span>
                           ))}
@@ -543,13 +543,13 @@ export default function MembershipPage() {
                   </tbody>
                 </table>
                 <div className="mt-6 space-y-4">
-                  <div>
-                    <span className="font-aeonik font-semibold text-gray-700 text-sm">Signature:</span>
-                    <span className="inline-block border-b border-gray-400 w-64 ml-2" />
+                  <div className="flex items-center gap-2">
+                    <span className="font-aeonik font-semibold text-gray-700 text-sm whitespace-nowrap">Signature:</span>
+                    <span className="border-b border-gray-400 flex-1 h-5" />
                   </div>
-                  <div>
-                    <span className="font-aeonik font-semibold text-gray-700 text-sm">Date:</span>
-                    <span className="inline-block border-b border-gray-400 w-48 ml-2" />
+                  <div className="flex items-center gap-2">
+                    <span className="font-aeonik font-semibold text-gray-700 text-sm whitespace-nowrap">Date:</span>
+                    <span className="border-b border-gray-400 flex-1 h-5" />
                   </div>
                   <div>
                     <p className="font-aeonik text-sm text-gray-600">Notes:</p>

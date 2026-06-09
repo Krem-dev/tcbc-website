@@ -412,7 +412,7 @@ export default function AboutPage() {
                           index % 2 === 0 ? "lg:pr-12" : "lg:pl-12"
                         }`}
                       >
-                        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                        <div className="bg-white rounded-2xl p-5 sm:p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
                           <div className="flex items-center space-x-4 mb-4">
                             <div className="w-20 h-20 bg-[#48007e] rounded-full flex items-center justify-center p-2">
                               <span className="font-satoshi text-white font-bold text-xs text-center leading-tight">
@@ -474,7 +474,7 @@ export default function AboutPage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {leadership
                   .filter((leader) => leader.category === leadershipCategory)
                   .map((leader) => (
@@ -483,7 +483,7 @@ export default function AboutPage() {
                     className="text-center"
                   >
                     {/* Circular Image */}
-                    <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden shadow-lg border-4 border-[#48007e]/10">
+                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto mb-4 rounded-full overflow-hidden shadow-lg border-4 border-[#48007e]/10">
                       <ImageWithSkeleton
                         src={leader.image}
                         alt={leader.name}

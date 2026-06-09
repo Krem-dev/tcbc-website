@@ -124,10 +124,10 @@ const Footer = () => {
                     alt="TCBC Logo"
                     width={160}
                     height={160}
-                    className="h-40 w-auto"
+                    className="h-24 w-auto sm:h-32 lg:h-40"
                     priority
                   />
-                  <span className="text-4xl font-bold font-satoshi">TCBC</span>
+                  <span className="text-2xl font-bold font-satoshi sm:text-3xl lg:text-4xl">TCBC</span>
                 </Link>
                 <p className="font-aeonik text-gray-300 leading-relaxed mt-4">
                   The Chosen Bible Church - A community of faith, hope, and love. Join us as we grow together in Christ and serve our community.

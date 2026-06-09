@@ -173,7 +173,7 @@ const NavBar = () => {
     <header
       className="bg-white/90 backdrop-blur-md shadow-lg fixed top-0 inset-x-0 z-50 border-b border-white/20"
     >
-      <div className="max-w-none mx-auto flex items-center justify-between px-6 sm:px-6 lg:px-8 py-3">
+      <div className="max-w-none mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex items-center">
           <Link
             href="/"
@@ -193,7 +193,7 @@ const NavBar = () => {
                   draggable={false}
                 />
                 <span
-                  className="font-satoshi text-sm sm:text-base font-bold whitespace-nowrap"
+                  className="font-satoshi text-[13px] sm:text-sm md:text-base font-bold whitespace-nowrap"
                   style={{ color: "#48007e" }}
                 >
                   The Chosen Bible Church

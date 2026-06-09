@@ -235,17 +235,17 @@ export default function MinistryPage() {
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
       <section
-        className="relative py-24 bg-center bg-cover"
+        className="relative py-16 sm:py-24 bg-center bg-cover"
         style={{ backgroundImage: "url('/bib-4.jpg')" }}
       >
         <div className="absolute inset-0 bg-[#48007e]/40" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          <h1 className="font-satoshi text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="font-satoshi text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
             Our Ministries
           </h1>
 
-          <p className="font-aeonik text-xl max-w-3xl mx-auto mb-8">
+          <p className="font-aeonik text-base sm:text-lg md:text-xl max-w-3xl mx-auto mb-8">
             Discover how you can grow in faith, serve others, and make an impact through our vibrant ministry programs.
           </p>
 
@@ -295,7 +295,7 @@ export default function MinistryPage() {
                         </motion.div>
                       </div>
 
-                      <p className={`font-aeonik text-xs sm:text-sm leading-relaxed mt-1.5 ${
+                      <p className={`font-aeonik text-sm leading-relaxed mt-1.5 ${
                         isExpanded ? "text-white" : "text-gray-600"
                       }`}>
                         {ministry.description}

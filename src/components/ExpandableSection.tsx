@@ -310,7 +310,7 @@ const ExpandableSection = () => {
           </div>
 
           <div className="order-2 lg:order-2 lg:sticky lg:top-8 lg:ml-12 xl:ml-[50px]">
-            <div className="relative flex items-center justify-center min-h-[420px] sm:min-h-[400px] lg:min-h-[500px]">
+            <div className="relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
               <AnimatePresence mode="wait">
                 {expandedSection ? (
                   <motion.div

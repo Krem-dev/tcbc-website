@@ -109,7 +109,7 @@ function VideoCard() {
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 className="font-satoshi mb-4 text-4xl font-bold text-[#48007e] lg:text-5xl">
+          <h2 className="font-satoshi mb-4 text-3xl sm:text-4xl font-bold text-[#48007e] lg:text-5xl">
             {videoData?.heading ? (
               <>
                 {videoData.heading.split(" ").slice(0, -1).join(" ")} <span className="text-[#7c01cd]">{videoData.heading.split(" ").pop()}</span>

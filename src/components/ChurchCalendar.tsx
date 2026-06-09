@@ -196,20 +196,20 @@ const ChurchCalendar: React.FC<ChurchCalendarProps> = ({ ministryFilter }) => {
               </button>
             </div>
 
-            {/* Day headers */}
-            <div className="grid grid-cols-7 border-b border-gray-100">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {day}
-                </div>
-              ))}
-            </div>
+            {/* Desktop / tablet month grid (lg and up) */}
+            <div className="hidden lg:block">
+              {/* Day headers */}
+              <div className="grid grid-cols-7 border-b border-gray-100">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                  <div key={day} className="py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    {day}
+                  </div>
+                ))}
+              </div>
 
-            {/* Calendar grid */}
-            <div className="grid grid-cols-7">
-              {calendarDays.map((day, index) => {
-                const hasContent = day.services.length > 0 || day.events.length > 0;
-                return (
+              {/* Calendar grid */}
+              <div className="grid grid-cols-7">
+                {calendarDays.map((day, index) => (
                   <div
                     key={index}
                     className={`min-h-[120px] p-2.5 border-b border-r border-gray-100 [&:nth-child(7n)]:border-r-0 ${
@@ -255,8 +255,90 @@ const ChurchCalendar: React.FC<ChurchCalendarProps> = ({ ministryFilter }) => {
                       )}
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile / tablet agenda list (below lg) */}
+            <div className="lg:hidden">
+              {(() => {
+                const agendaDays = calendarDays.filter(
+                  (day) =>
+                    day.isCurrentMonth &&
+                    (day.services.length > 0 || day.events.length > 0)
                 );
-              })}
+
+                if (agendaDays.length === 0) {
+                  return (
+                    <p className="px-6 py-12 text-center text-sm text-gray-500">
+                      No services or events scheduled this month.
+                    </p>
+                  );
+                }
+
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+
+                return (
+                  <ul className="divide-y divide-gray-100">
+                    {agendaDays.map((day) => {
+                      const weekday = new Date(year, month, day.date).toLocaleDateString(
+                        "en-US",
+                        { weekday: "short" }
+                      );
+                      return (
+                        <li key={day.date} className="flex gap-3 px-4 py-3.5 sm:px-6">
+                          <div className="w-12 flex-shrink-0 text-center">
+                            <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                              {weekday}
+                            </div>
+                            <div
+                              className={`mt-0.5 text-lg font-semibold ${
+                                isToday(day.date)
+                                  ? "mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-[#48007e] text-white"
+                                  : "text-gray-900"
+                              }`}
+                            >
+                              {day.date}
+                            </div>
+                          </div>
+                          <div className="min-w-0 flex-1 space-y-2">
+                            {day.services.map((service, idx) => (
+                              <div
+                                key={`m-service-${idx}`}
+                                className="rounded-lg bg-gray-100 px-3 py-2"
+                              >
+                                <div className="text-sm font-medium text-gray-800">
+                                  {service.service}
+                                </div>
+                                <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
+                                  <Clock className="h-3 w-3" />
+                                  {service.time}
+                                </div>
+                              </div>
+                            ))}
+                            {day.events.map((event, idx) => (
+                              <button
+                                key={`m-event-${idx}`}
+                                onClick={() => setSelectedEvent(event)}
+                                className="block w-full rounded-lg bg-[#48007e] px-3 py-2 text-left text-white transition hover:bg-[#5a009e]"
+                              >
+                                <div className="text-sm font-medium">{event.title}</div>
+                                {event.location && (
+                                  <div className="mt-0.5 flex items-center gap-1 text-xs text-white/75">
+                                    <MapPin className="h-3 w-3 flex-shrink-0" />
+                                    <span className="truncate">{event.location}</span>
+                                  </div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                );
+              })()}
             </div>
           </div>
         )}

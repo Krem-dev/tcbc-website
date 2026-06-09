@@ -34,9 +34,9 @@ const PartnersSection: React.FC = () => {
               <div
                 key={`${p.name}-${i}`}
                 role="listitem"
-                className="flex-shrink-0 w-40 px-6 flex items-center justify-center"
+                className="flex-shrink-0 w-28 sm:w-40 px-4 sm:px-6 flex items-center justify-center"
               >
-                <div className="relative w-full h-16">
+                <div className="relative w-full h-12 sm:h-16">
                   <Image
                     src={p.logo}
                     alt={`${p.name} logo`}

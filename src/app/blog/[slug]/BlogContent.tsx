@@ -30,7 +30,7 @@ export default function BlogContent({ article }: { article: Article }) {
   return (
     <main className="min-h-screen bg-white">
       <section
-        className="relative h-96 bg-center bg-cover overflow-hidden"
+        className="relative h-72 sm:h-80 md:h-96 bg-center bg-cover overflow-hidden"
         style={{ backgroundImage: `url('${imageUrl}')` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#48007e]/80 via-[#48007e]/70 to-[#7c01cd]/75"></div>
@@ -45,7 +45,7 @@ export default function BlogContent({ article }: { article: Article }) {
               Back to Blog
             </Link>
 
-            <h1 className="font-satoshi text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+            <h1 className="font-satoshi text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
               {article.title}
             </h1>
 
@@ -76,7 +76,7 @@ export default function BlogContent({ article }: { article: Article }) {
                 article.content.map((block: any, idx: number) => {
                   if (block._type === "block") {
                     return (
-                      <p key={idx} className="text-lg leading-8 text-gray-700">
+                      <p key={idx} className="text-base sm:text-lg leading-7 sm:leading-8 text-gray-700">
                         {block.children?.map((child: any, i: number) => (
                           <span key={i}>
                             {child.marks?.includes("strong") ? (
