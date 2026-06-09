@@ -217,12 +217,12 @@ const Footer = () => {
               <p className="font-aeonik text-sm text-gray-400">
                 Powered by{" "}
                 <a
-                  href="https://www.sleekteq.com"
+                  href="https://sleekteqsolutions.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#b9d1f3] hover:text-white transition-colors duration-300 font-semibold"
                 >
-                  sleekteq
+                  sleekteq solutions LTD.
                 </a>
               </p>
             </div>
