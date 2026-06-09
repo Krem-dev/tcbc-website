@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import { ImageWithSkeleton } from "@/components/SkeletonLoader";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 
@@ -484,10 +484,11 @@ export default function AboutPage() {
                   >
                     {/* Circular Image */}
                     <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden shadow-lg border-4 border-[#48007e]/10">
-                      <Image
+                      <ImageWithSkeleton
                         src={leader.image}
                         alt={leader.name}
                         fill
+                        sizes="128px"
                         className={`object-cover ${leader.imagePosition === "top" ? "object-top" : ""}`}
                       />
                     </div>

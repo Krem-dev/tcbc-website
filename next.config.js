@@ -2,6 +2,9 @@
 const nextConfig = {
   output: 'standalone',
   images: {
+    // Hostinger's runtime can't run Next's image optimizer (/_next/image 500s,
+    // even on tiny files). Serve images as-is; sources are pre-compressed.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
