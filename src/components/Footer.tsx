@@ -222,7 +222,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   className="text-[#b9d1f3] hover:text-white transition-colors duration-300 font-semibold"
                 >
-                  sleekteq solutions LTD.
+                  Sleekteq Solutions Ltd.
                 </a>
               </p>
             </div>
